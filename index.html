@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Monitor Dog</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#070a16">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#05070f;--card:#0f1528;--borda:#222b45;--txt:#e8ecf8;--sub:#9aa6c4;--ouro:#ffc46b;--verde:#4ade80;--verm:#f87171;--azul:#60a5fa}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(120% 60% at 50% 0%,#121a33 0%,#070a16 55%,#04050b 100%);background-attachment:fixed;color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Inter,sans-serif;min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+#login{display:none;max-width:420px;margin:0 auto;padding:80px 20px}
+#login input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--borda);background:#0f1528;color:var(--txt);font-size:16px;margin:14px 0}
+#login button{width:100%;padding:14px;border-radius:12px;border:0;background:var(--ouro);color:#111;font-weight:700;font-size:15px;min-height:48px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+h1{margin:0;font-size:22px;letter-spacing:.08em;color:var(--ouro)}
+.sub{font-size:11px;color:var(--sub);margin-top:2px}
+.pill{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.05em;border:1px solid}
+.dot{width:8px;height:8px;border-radius:50%}
+.on{color:#86efac;border-color:rgba(74,222,128,.45);background:rgba(74,222,128,.1)}
+.on .dot{background:var(--verde);animation:ping 1.8s infinite}
+.off{color:#fca5a5;border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.1)}
+.off .dot{background:var(--verm)}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}100%{box-shadow:0 0 0 9px rgba(74,222,128,0)}}
+.card{background:rgba(255,255,255,.035);border:1px solid var(--borda);border-radius:14px;padding:14px;margin-bottom:12px}
+.lbl{font-size:10.5px;color:var(--sub);letter-spacing:.12em;text-transform:uppercase}
+.big{font-size:34px;font-weight:700;margin-top:4px}
+.row{display:flex;justify-content:space-between;gap:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.val{font-size:18px;font-weight:700;margin-top:4px}
+.pos{color:var(--verde)} .neg{color:var(--verm)} .neu{color:var(--txt)}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tabs button{flex:1;background:transparent;color:var(--sub);border:1px solid var(--borda);border-radius:10px;padding:9px 0;font-size:12px;font-weight:600;min-height:40px}
+.tabs button.sel{background:var(--ouro);color:#111;border-color:var(--ouro)}
+.fonte{font-size:12px;font-weight:700;letter-spacing:.08em}
+.m{color:var(--ouro)} .c{color:var(--azul)}
+.mini{font-size:12px;color:var(--sub);margin-top:4px}
+.item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--borda)}
+.item:first-of-type{border-top:none}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:6px}
+.tm{background:rgba(255,196,107,.15);color:var(--ouro)} .tc{background:rgba(96,165,250,.15);color:var(--azul)}
+.det{font-size:11.5px;color:var(--sub);margin-top:3px}
+.vazio{font-size:13px;color:var(--sub);padding:6px 0}
+h2{font-size:13px;color:var(--sub);letter-spacing:.12em;margin:18px 0 8px;font-weight:600}
+.an{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--borda);font-size:12.5px;line-height:1.5}
+.an div{margin:2px 0}
+.selo{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:999px;margin-bottom:6px}
+.s-ok{background:rgba(74,222,128,.14);color:#86efac}.s-at{background:rgba(255,196,107,.16);color:var(--ouro)}.s-pe{background:rgba(248,113,113,.16);color:#fca5a5}
+.pbox{padding:10px 0;border-top:1px solid var(--borda)}.pbox:first-of-type{border-top:none}
+.nota{font-size:10.5px;color:var(--sub);margin-top:6px}
+.aviso{font-size:11px;color:var(--sub);text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+<div id="login">
+  <h1>MONITOR DOG</h1>
+  <p class="sub" style="font-size:14px;margin-top:10px">Digite a chave do app (só na primeira vez).</p>
+  <label for="chave" class="lbl">Chave</label>
+  <input id="chave" type="password" autocomplete="off">
+  <button onclick="salvarChave()">Entrar</button>
+  <p class="sub" id="lerro" style="color:#fca5a5"></p>
+</div>
+<div class="wrap" id="app">
+  <div class="top">
+    <div><h1>MONITOR DOG</h1><div class="sub" id="conta">conta —</div></div>
+    <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
+  </div>
+
+  <div class="card">
+    <div class="lbl">Resultado de hoje (fechado + aberto)</div>
+    <div class="big neu" id="hojeTot">—</div>
+    <div class="mini" id="hojeDet"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card"><div class="lbl">Saldo</div><div class="val" id="saldo">—</div></div>
+    <div class="card"><div class="lbl">Patrimônio</div><div class="val" id="patr">—</div></div>
+  </div>
+
+  <h2>RESULTADOS FECHADOS</h2>
+  <div class="tabs">
+    <button id="b_hoje" class="sel" onclick="per('hoje')">HOJE</button>
+    <button id="b_semana" onclick="per('semana')">SEMANA</button>
+    <button id="b_mes" onclick="per('mes')">MÊS</button>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="fonte m">MERCÚRIO</div><div class="val" id="pm">—</div><div class="mini" id="pmd"></div></div>
+    <div class="card"><div class="fonte c">COPY</div><div class="val" id="pc">—</div><div class="mini" id="pcd"></div></div>
+  </div>
+
+  <h2>POSIÇÕES ABERTAS</h2>
+  <div class="card" id="abertas"><div class="vazio">—</div></div>
+
+  <h2>ÚLTIMAS OPERAÇÕES (7 DIAS)</h2>
+  <div class="card" id="ultimas"><div class="vazio">—</div></div>
+
+  <div class="aviso">Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
+</div>
+<script>
+var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
+var K = null; try { K = localStorage.getItem('monitor_dog_chave'); } catch(e) {}
+var D = null, P = 'hoje';
+function salvarChave(){ var v = document.getElementById('chave').value.trim(); if (!v) return; K = v; try { localStorage.setItem('monitor_dog_chave', v); } catch(e) {} mostrar(); buscar(); }
+function mostrar(){ document.getElementById('login').style.display = K ? 'none' : 'block'; document.getElementById('app').style.display = K ? 'block' : 'none'; }
+function usd(v, s){ var a = Math.abs(v).toFixed(2).replace('.', ','); a = a.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); return (s ? (v >= 0 ? '+' : '-') : (v < 0 ? '-' : '')) + 'US$ ' + a; }
+function cls(v){ return v > 0.004 ? 'pos' : (v < -0.004 ? 'neg' : 'neu'); }
+function set(id, txt, c){ var e = document.getElementById(id); e.textContent = txt; if (c) e.className = e.className.replace(/\b(pos|neg|neu)\b/g, '') + ' ' + c; }
+function hora(s){ return s ? s.substr(11, 5) : ''; }
+function dia(s){ return s ? s.substr(8, 2) + '/' + s.substr(5, 2) : ''; }
+function per(p){ P = p; ['hoje','semana','mes'].forEach(function(x){ document.getElementById('b_' + x).className = x === p ? 'sel' : ''; }); desenhar(); }
+function fmt(v){ return Number(v).toLocaleString('pt-BR', {maximumFractionDigits: 2}); }
+function regiao(x){
+  // suporte e resistência mais próximos e onde o preço está entre eles
+  var R = {txt: [], ruim: false, boa: false}, p = Number(x.atual), atr = Number(x.atr) || 0;
+  var sup = Number(x.sup), res = Number(x.res);
+  var dS = sup > 0 ? p - sup : null, dR = res > 0 ? res - p : null;
+  R.txt.push('📍 Resistência: ' + (res > 0 ? fmt(res) + ' (a ' + fmt(dR) + ')' : '—') + ' · Suporte: ' + (sup > 0 ? fmt(sup) + ' (a ' + fmt(dS) + ')' : '—'));
+  var perto = atr > 0 ? 0.4 * atr : 0, compra = x.tipo === 'COMPRA';
+  var pR = dR !== null && perto > 0 && dR <= perto, pS = dS !== null && perto > 0 && dS <= perto;
+  if (pR && !pS) {
+    if (compra) { R.txt.push('⚠️ Compra encostada na resistência: o preço pode travar ou voltar daqui'); R.ruim = true; }
+    else { R.txt.push('✅ Venda saindo de perto da resistência: região a favor da venda'); R.boa = true; }
+  } else if (pS && !pR) {
+    if (compra) { R.txt.push('✅ Compra saindo de perto do suporte: região a favor da compra'); R.boa = true; }
+    else { R.txt.push('⚠️ Venda encostada no suporte: o preço pode segurar ou repicar daqui'); R.ruim = true; }
+  } else if (pS && pR) R.txt.push('↔️ Preço espremido entre suporte e resistência');
+  else if (dS !== null && dR !== null) {
+    var lado = compra ? dR : dS;
+    R.txt.push('↕️ Preço no meio do caminho · espaço livre até a próxima barreira: ' + fmt(lado));
+  }
+  return R;
+}
+function analise(x){
+  var L = [], patr = D.patrimonio || 1, copy = x.fonte !== 'MERCURIO', frac = null;
+  var sem_stop = (!copy && x.risco === null);
+  if (x.favor === 1) L.push('✅ A favor da tendência (média longa do gráfico)');
+  else if (x.favor === -1) L.push('⚠️ Contra a tendência (média longa do gráfico)');
+  var R = regiao(x); R.txt.forEach(function(t){ L.push(t); });
+  if (copy) {
+    L.push('🔒 Stop e alvo do Copy ficam no computador do provedor: a operação está protegida, só não aparecem aqui');
+  } else {
+    if (sem_stop) L.push('🚨 SEM STOP: a perda não tem limite');
+    else if (x.protegido) L.push('🛡️ Stop no zero a zero ou no lucro: essa não perde mais (no stop: ' + usd(x.risco, true) + ')');
+    else L.push('🛑 Se bater o stop: ' + usd(x.risco, true) + ' (' + (Math.abs(x.risco) / patr * 100).toFixed(1).replace('.', ',') + '% da conta)');
+    if (x.ganho !== null) L.push('🎯 Se bater o alvo: ' + usd(x.ganho, true));
+    if (x.prog !== null && x.prog >= 0) L.push('📈 Já fez ' + Math.min(x.prog, 100) + '% do caminho até o alvo');
+    if (!sem_stop && !x.protegido && x.lucro < 0 && x.risco < 0) { frac = Math.round(100 * x.lucro / x.risco); L.push('📉 Já andou ' + frac + '% do caminho até o stop'); }
+  }
+  if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
+  else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
+  if (!copy) L.push('📊 No teste de 12 meses, 87% das operações do MERCÚRIO fecharam no lucro (PF 2,39)');
+  else if (D.hist30 && D.hist30.COPY.ops) { var h = D.hist30.COPY; L.push('📊 Desde ' + dia(D.desde) + ': ' + Math.round(100 * h.ganhos / h.ops) + '% das ' + h.ops + ' operações do Copy fecharam no lucro (resultado ' + usd(h.lucro, true) + ')'); }
+  var selo = 'at', txt = '🟡 ATENÇÃO';
+  var perigo = copy ? (x.lucro < 0 && Math.abs(x.lucro) / patr > 0.1)
+                    : (sem_stop || (!x.protegido && x.risco !== null && Math.abs(x.risco) / patr > 0.2) || (frac !== null && frac >= 70));
+  var conforto = copy ? (x.lucro > 0 && x.favor >= 0 && !R.ruim)
+                      : (x.protegido || (x.lucro > 0 && x.favor >= 0 && !R.ruim));
+  if (perigo) { selo = 'pe'; txt = '🔴 PERIGO'; }
+  else if (conforto) { selo = 'ok'; txt = '🟢 CONFORTÁVEL'; }
+  var box = document.createElement('div'); box.className = 'an';
+  var sp = document.createElement('span'); sp.className = 'selo s-' + selo; sp.textContent = txt; box.appendChild(sp);
+  L.forEach(function(t){ var d = document.createElement('div'); d.textContent = t; box.appendChild(d); });
+  return box;
+}
+function desenhar(){
+  if (!D) return;
+  var idade = (Date.now() - D.recebido) / 1000;
+  var pill = document.getElementById('pill');
+  if (idade < 60) { pill.className = 'pill on'; set('st', 'AO VIVO'); }
+  else { pill.className = 'pill off'; set('st', 'SEM SINAL ' + Math.round(idade / 60) + ' MIN'); }
+  set('conta', 'conta ' + D.conta + (D.desde ? ' · contando desde ' + dia(D.desde) : '') + ' · atualizado ' + D.hora.substr(11, 8));
+  var h = D.periodos.hoje, fl = D.flutuante.MERCURIO + D.flutuante.COPY;
+  var tot = h.MERCURIO.lucro + h.COPY.lucro + fl;
+  set('hojeTot', usd(tot, true), cls(tot));
+  set('hojeDet', 'Fechado ' + usd(h.MERCURIO.lucro + h.COPY.lucro, true) + ' · aberto ' + usd(fl, true));
+  set('saldo', usd(D.saldo)); set('patr', usd(D.patrimonio));
+  var p = D.periodos[P];
+  set('pm', usd(p.MERCURIO.lucro, true), cls(p.MERCURIO.lucro));
+  set('pc', usd(p.COPY.lucro, true), cls(p.COPY.lucro));
+  set('pmd', p.MERCURIO.ops + ' ops · ' + (p.MERCURIO.ops ? Math.round(100 * p.MERCURIO.ganhos / p.MERCURIO.ops) : 0) + '% ganhos');
+  set('pcd', p.COPY.ops + ' ops · ' + (p.COPY.ops ? Math.round(100 * p.COPY.ganhos / p.COPY.ops) : 0) + '% ganhos');
+  var a = document.getElementById('abertas'); a.innerHTML = '';
+  if (!D.posicoes.length) a.innerHTML = '<div class="vazio">Nenhuma posição aberta</div>';
+  D.posicoes.forEach(function(x){
+    var w = document.createElement('div'); w.className = 'pbox';
+    var r = document.createElement('div'); r.className = 'item'; r.style.borderTop = 'none'; r.style.padding = '0';
+    r.innerHTML = '<div><div><span class="tag ' + (x.fonte === 'MERCURIO' ? 'tm' : 'tc') + '">' + (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : 'COPY') + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
+    r.querySelector('b').textContent = x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',');
+    r.querySelector('.det').textContent = 'entrada ' + x.entrada + ' · agora ' + x.atual + ' · desde ' + hora(x.aberta);
+    var v = r.querySelector('.val'); v.textContent = usd(x.lucro, true); v.className = 'val ' + cls(x.lucro);
+    w.appendChild(r); w.appendChild(analise(x)); a.appendChild(w);
+  });
+  if (D.posicoes.length) { var nt = document.createElement('div'); nt.className = 'nota'; nt.textContent = 'Leitura da situação de cada operação (fatos), não é previsão de para onde o preço vai.'; a.appendChild(nt); }
+  var u = document.getElementById('ultimas'); u.innerHTML = '';
+  if (!D.ultimas.length) u.innerHTML = '<div class="vazio">Nenhuma operação nos últimos 7 dias</div>';
+  D.ultimas.forEach(function(x){
+    var r = document.createElement('div'); r.className = 'item';
+    r.innerHTML = '<div><div><span class="tag ' + (x.fonte === 'MERCURIO' ? 'tm' : 'tc') + '">' + (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : 'COPY') + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
+    r.querySelector('b').textContent = x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',');
+    r.querySelector('.det').textContent = dia(x.hora) + ' ' + hora(x.hora);
+    var v = r.querySelector('.val'); v.textContent = usd(x.lucro, true); v.className = 'val ' + cls(x.lucro);
+    u.appendChild(r);
+  });
+}
+function buscar(){
+  if (!K) return;
+  fetch(API + '?json=1&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(r){ return r.text(); }).then(function(t){
+    if (t === 'negado') { try { localStorage.removeItem('monitor_dog_chave'); } catch(e) {} K = null; mostrar(); document.getElementById('lerro').textContent = 'Chave errada, tente de novo.'; return; }
+    if (t) { try { D = JSON.parse(t); desenhar(); } catch(e) {} }
+  }).catch(function(){});
+}
+mostrar(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
