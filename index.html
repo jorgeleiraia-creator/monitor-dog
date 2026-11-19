@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Monitor Dog</title>
+<title>Jorge Leira Trader</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icone-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -20,9 +20,9 @@ body{margin:0;background:radial-gradient(120% 60% at 50% 0%,#121a33 0%,#070a16 5
 #login input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--borda);background:#0f1528;color:var(--txt);font-size:16px;margin:14px 0}
 #login button{width:100%;padding:14px;border-radius:12px;border:0;background:var(--ouro);color:#111;font-weight:700;font-size:15px;min-height:48px}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-h1{margin:0;font-size:22px;letter-spacing:.08em;color:var(--ouro)}
+h1{margin:0;font-size:18px;letter-spacing:.06em;color:var(--ouro);white-space:nowrap}
 .sub{font-size:11px;color:var(--sub);margin-top:2px}
-.pill{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.05em;border:1px solid}
+.pill{white-space:nowrap;display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.05em;border:1px solid}
 .dot{width:8px;height:8px;border-radius:50%}
 .on{color:#86efac;border-color:rgba(74,222,128,.45);background:rgba(74,222,128,.1)}
 .on .dot{background:var(--verde);animation:ping 1.8s infinite}
@@ -55,23 +55,53 @@ h2{font-size:13px;color:var(--sub);letter-spacing:.12em;margin:18px 0 8px;font-w
 .s-ok{background:rgba(74,222,128,.14);color:#86efac}.s-at{background:rgba(255,196,107,.16);color:var(--ouro)}.s-pe{background:rgba(248,113,113,.16);color:#fca5a5}
 .pbox{padding:10px 0;border-top:1px solid var(--borda)}.pbox:first-of-type{border-top:none}
 .nota{font-size:10.5px;color:var(--sub);margin-top:6px}
+.tabsx{display:flex;gap:6px;margin:0 0 14px}
+.tabsx button{flex:1;position:relative;background:transparent;color:var(--sub);border:1px solid var(--borda);border-radius:12px;padding:10px 0;font-size:13px;font-weight:700;letter-spacing:.06em;min-height:44px}
+.tabsx button.sel{background:rgba(255,196,107,.14);color:var(--ouro);border-color:rgba(255,196,107,.5)}
+.badge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;border-radius:999px;background:var(--verm);color:#fff;font-size:11px}
+.som{width:44px;height:44px;border-radius:12px;border:1px solid var(--borda);background:rgba(255,255,255,.04);color:var(--txt);display:flex;align-items:center;justify-content:center;padding:0}
+.som svg{width:22px;height:22px}
+.som.mudo{color:var(--verm);border-color:rgba(248,113,113,.45)}
+.direita{display:flex;align-items:center;gap:8px}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-150%);width:calc(100% - 32px);max-width:488px;padding:14px 16px;border-radius:14px;background:#1a2340;border:1px solid var(--ouro);box-shadow:0 10px 30px rgba(0,0,0,.5);font-weight:700;font-size:14px;z-index:9;transition:transform .35s}
+.toast.vis{transform:translateX(-50%) translateY(0)}
+.toast small{display:block;font-weight:500;color:var(--sub);margin-top:3px}
+.gcard{background:rgba(255,255,255,.035);border:1px solid var(--borda);border-radius:14px;padding:12px;margin-bottom:12px}
+.gtit{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.gtit b{font-size:15px}
+canvas.g{width:100%;height:280px;display:block}
+.leg{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--sub);margin-top:8px}
+.leg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .aviso{font-size:11px;color:var(--sub);text-align:center;margin-top:18px}
 </style>
 </head>
 <body>
 <div id="login">
-  <h1>MONITOR DOG</h1>
+  <h1>JORGE LEIRA TRADER</h1>
   <p class="sub" style="font-size:14px;margin-top:10px">Digite a chave do app (só na primeira vez).</p>
   <label for="chave" class="lbl">Chave</label>
   <input id="chave" type="password" autocomplete="off">
   <button onclick="salvarChave()">Entrar</button>
   <p class="sub" id="lerro" style="color:#fca5a5"></p>
 </div>
+<div class="toast" id="toast"></div>
 <div class="wrap" id="app">
   <div class="top">
-    <div><h1>MONITOR DOG</h1><div class="sub" id="conta">conta —</div></div>
-    <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
+    <div><h1>JORGE LEIRA TRADER</h1><div class="sub" id="conta">conta —</div></div>
+    <div class="direita">
+      <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
+      <button class="som" id="bsom" onclick="alternarSom()" aria-label="Ligar ou desligar o alerta sonoro"></button>
+    </div>
   </div>
+  <div class="tabsx">
+    <button id="t_resumo" class="sel" onclick="aba('resumo')">RESUMO</button>
+    <button id="t_graf" onclick="aba('graf')">GRÁFICOS<span class="badge" id="nbadge" style="display:none">0</span></button>
+  </div>
+  <div id="v_graf" style="display:none"><div id="graficos"></div>
+    <div class="leg"><span><i style="background:#ffc46b"></i>Entrada</span><span><i style="background:#f87171"></i>Stop</span><span><i style="background:#4ade80"></i>Alvo</span><span><i style="background:#60a5fa"></i>Suporte / resistência</span></div>
+    <div class="nota">Gráfico de 5 minutos (últimas 6 horas) · horários de Brasília</div>
+  </div>
+  <div id="v_resumo">
 
   <div class="card">
     <div class="lbl">Resultado de hoje (fechado + aberto)</div>
@@ -101,6 +131,7 @@ h2{font-size:13px;color:var(--sub);letter-spacing:.12em;margin:18px 0 8px;font-w
   <h2>ÚLTIMAS OPERAÇÕES (7 DIAS)</h2>
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
+  </div>
   <div class="aviso">Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
 </div>
 <script>
@@ -115,6 +146,87 @@ function set(id, txt, c){ var e = document.getElementById(id); e.textContent = t
 function hora(s){ return s ? s.substr(11, 5) : ''; }
 function dia(s){ return s ? s.substr(8, 2) + '/' + s.substr(5, 2) : ''; }
 function per(p){ P = p; ['hoje','semana','mes'].forEach(function(x){ document.getElementById('b_' + x).className = x === p ? 'sel' : ''; }); desenhar(); }
+
+var ABA = 'resumo', VISTOS = null;
+var SOM = true; try { SOM = localStorage.getItem('jlt_som') !== '0'; } catch(e) {}
+var AC = null;
+var ICO_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+var ICO_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.7 3A6 6 0 0 1 18 8a21.3 21.3 0 0 0 .6 5"/><path d="M17 17H3s3-2 3-9a4.67 4.67 0 0 1 .3-1.7"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="m2 2 20 20"/></svg>';
+function botaoSom(){ var b = document.getElementById('bsom'); b.innerHTML = SOM ? ICO_ON : ICO_OFF; b.className = 'som' + (SOM ? '' : ' mudo'); }
+function liberarAudio(){ try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch(e) {} }
+document.addEventListener('click', liberarAudio); document.addEventListener('touchstart', liberarAudio);
+function alternarSom(){ SOM = !SOM; try { localStorage.setItem('jlt_som', SOM ? '1' : '0'); } catch(e) {} botaoSom(); if (SOM) { liberarAudio(); tocar([660, 880], 0.12); } }
+function tocar(notas, dur){
+  if (!SOM) return; liberarAudio(); if (!AC) return;
+  var t = AC.currentTime + 0.02;
+  notas.forEach(function(f, i){
+    var o = AC.createOscillator(), g = AC.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t + i * dur); g.gain.linearRampToValueAtTime(0.35, t + i * dur + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + i * dur + dur * 1.8);
+    o.connect(g); g.connect(AC.destination); o.start(t + i * dur); o.stop(t + i * dur + dur * 2);
+  });
+}
+function avisar(tit, sub, entrada){
+  var el = document.getElementById('toast'); el.innerHTML = ''; var b = document.createElement('div'); b.textContent = tit; var sm = document.createElement('small'); sm.textContent = sub; el.appendChild(b); el.appendChild(sm);
+  el.style.borderColor = entrada ? 'var(--ouro)' : 'var(--azul)'; el.className = 'toast vis';
+  clearTimeout(window.__tt); window.__tt = setTimeout(function(){ el.className = 'toast'; }, 9000);
+  if (entrada) { tocar([523, 659, 784, 1047], 0.16); setTimeout(function(){ tocar([523, 659, 784, 1047], 0.16); }, 1100); if (SOM && navigator.vibrate) navigator.vibrate([200, 100, 200]); }
+  else { tocar([784, 523], 0.22); if (SOM && navigator.vibrate) navigator.vibrate(150); }
+}
+function conferirAlertas(){
+  var atual = {}; D.posicoes.forEach(function(x){ atual[x.ticket] = x; });
+  if (VISTOS !== null) {
+    Object.keys(atual).forEach(function(k){ if (!VISTOS[k]) { var x = atual[k]; avisar('🔔 Operação em andamento', (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : 'COPY') + ' · ' + x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',') + ' · entrada ' + x.entrada, true); } });
+    Object.keys(VISTOS).forEach(function(k){ if (!atual[k]) { var x = VISTOS[k]; avisar('✅ Operação encerrada', (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : 'COPY') + ' · ' + x.tipo + ' ' + x.ativo + ' · veja o resultado em Últimas operações', false); } });
+  }
+  VISTOS = atual;
+}
+function aba(a){ ABA = a; document.getElementById('t_resumo').className = a === 'resumo' ? 'sel' : ''; document.getElementById('t_graf').className = a === 'graf' ? 'sel' : ''; document.getElementById('v_resumo').style.display = a === 'resumo' ? 'block' : 'none'; document.getElementById('v_graf').style.display = a === 'graf' ? 'block' : 'none'; desenharGraficos(); }
+function desenharGraficos(){
+  if (!D) return;
+  var n = D.posicoes.length, bd = document.getElementById('nbadge'); bd.style.display = n ? 'inline-block' : 'none'; bd.textContent = n;
+  if (ABA !== 'graf') return;
+  var box = document.getElementById('graficos');
+  if (!n || !D.graficos) { box.innerHTML = '<div class="gcard"><div class="vazio">Nenhuma operação aberta agora. O gráfico aparece aqui assim que entrar uma operação.</div></div>'; return; }
+  var porAtivo = {}; D.posicoes.forEach(function(x){ (porAtivo[x.ativo] = porAtivo[x.ativo] || []).push(x); });
+  var ativos = Object.keys(porAtivo);
+  if (box.dataset.k !== ativos.join('|')) { box.innerHTML = ''; ativos.forEach(function(a){ var c = document.createElement('div'); c.className = 'gcard'; c.innerHTML = '<div class="gtit"><b></b><span class="mini"></span></div><canvas class="g" role="img"></canvas>'; c.dataset.a = a; box.appendChild(c); }); box.dataset.k = ativos.join('|'); }
+  [].forEach.call(box.children, function(c){
+    var a = c.dataset.a, ops = porAtivo[a], v = D.graficos[a] || [];
+    var luc = ops.reduce(function(s, x){ return s + x.lucro; }, 0);
+    c.querySelector('b').textContent = a + ' · 5 min';
+    var sp = c.querySelector('span'); sp.textContent = ops.map(function(x){ return x.tipo + ' ' + String(x.lote).replace('.', ','); }).join(' + ') + ' · ' + usd(luc, true); sp.style.color = luc >= 0 ? 'var(--verde)' : 'var(--verm)';
+    var cv = c.querySelector('canvas'); cv.setAttribute('aria-label', 'Gráfico de 5 minutos de ' + a + ' com a operação aberta');
+    velas(cv, v, ops);
+  });
+}
+function velas(cv, v, ops){
+  var dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight; if (!W) return;
+  cv.width = W * dpr; cv.height = H * dpr; var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  if (!v.length) return;
+  var dirW = 62, baixo = 18, pw = W - dirW, ph = H - baixo;
+  var lo = Infinity, hi = -Infinity; v.forEach(function(k){ lo = Math.min(lo, k[3]); hi = Math.max(hi, k[2]); });
+  var x0 = ops[0];
+  ops.forEach(function(x){ [Number(x.entrada)].concat(Number(x.sl) > 0 ? [Number(x.sl)] : []).concat(Number(x.tp) > 0 ? [Number(x.tp)] : []).forEach(function(p){ lo = Math.min(lo, p); hi = Math.max(hi, p); }); });
+  var pad = (hi - lo) * 0.06 || 1; lo -= pad; hi += pad;
+  function Y(p){ return ph - (p - lo) / (hi - lo) * ph; }
+  g.strokeStyle = 'rgba(255,255,255,.06)'; g.lineWidth = 1; g.fillStyle = '#9aa6c4'; g.font = '11px -apple-system,Segoe UI,Roboto,sans-serif'; g.textAlign = 'left';
+  for (var i = 0; i <= 4; i++) { var p = lo + (hi - lo) * i / 4, y = Y(p); g.beginPath(); g.moveTo(0, y); g.lineTo(pw, y); g.stroke(); g.fillText(fmt(p), pw + 6, Math.min(ph - 2, Math.max(11, y + 4))); }
+  var cw = pw / v.length, bw = Math.max(1, cw * 0.62);
+  v.forEach(function(k, i){
+    var cx = i * cw + cw / 2, up = k[4] >= k[1];
+    g.strokeStyle = g.fillStyle = up ? '#4ade80' : '#f87171';
+    g.beginPath(); g.moveTo(cx, Y(k[2])); g.lineTo(cx, Y(k[3])); g.stroke();
+    var yo = Y(k[1]), yc = Y(k[4]); g.fillRect(cx - bw / 2, Math.min(yo, yc), bw, Math.max(1, Math.abs(yc - yo)));
+    if (i % 12 === 0) { g.fillStyle = '#9aa6c4'; g.textAlign = 'center'; g.fillText(k[0], cx, H - 4); g.textAlign = 'left'; }
+  });
+  function linha(p, cor, txt, tracej){ if (!(p > 0) || p < lo || p > hi) return; var y = Y(p); g.save(); g.strokeStyle = cor; g.lineWidth = 1.5; if (tracej) g.setLineDash([6, 4]); g.beginPath(); g.moveTo(0, y); g.lineTo(pw, y); g.stroke(); g.restore(); g.fillStyle = cor; g.fillRect(pw, y - 9, dirW, 18); g.fillStyle = '#0b0f1e'; g.font = 'bold 11px -apple-system,Segoe UI,Roboto,sans-serif'; g.fillText(txt, pw + 4, y + 4); g.font = '11px -apple-system,Segoe UI,Roboto,sans-serif'; }
+  linha(Number(x0.sup), 'rgba(96,165,250,.8)', 'SUP', true);
+  linha(Number(x0.res), 'rgba(96,165,250,.8)', 'RES', true);
+  ops.forEach(function(x){ linha(Number(x.sl), '#f87171', 'STOP', true); linha(Number(x.tp), '#4ade80', 'ALVO', true); linha(Number(x.entrada), '#ffc46b', 'ENTRADA', false); });
+  var ul = v[v.length - 1][4], yu = Y(ul); g.fillStyle = '#e8ecf8'; g.fillRect(pw, yu - 9, dirW, 18); g.fillStyle = '#0b0f1e'; g.font = 'bold 11px -apple-system,Segoe UI,Roboto,sans-serif'; g.fillText(fmt(ul), pw + 4, yu + 4);
+}
+window.addEventListener('resize', desenharGraficos);
 function fmt(v){ return Number(v).toLocaleString('pt-BR', {maximumFractionDigits: 2}); }
 function regiao(x){
   // suporte e resistência mais próximos e onde o preço está entre eles
@@ -213,10 +325,10 @@ function buscar(){
   if (!K) return;
   fetch(API + '?json=1&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(r){ return r.text(); }).then(function(t){
     if (t === 'negado') { try { localStorage.removeItem('monitor_dog_chave'); } catch(e) {} K = null; mostrar(); document.getElementById('lerro').textContent = 'Chave errada, tente de novo.'; return; }
-    if (t) { try { D = JSON.parse(t); desenhar(); } catch(e) {} }
+    if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); } catch(e) {} }
   }).catch(function(){});
 }
-mostrar(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
+botaoSom(); mostrar(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
