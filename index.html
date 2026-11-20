@@ -184,7 +184,10 @@ function conferirAlertas(){
 }
 function aba(a){ ABA = a; document.getElementById('t_resumo').className = a === 'resumo' ? 'sel' : ''; document.getElementById('t_graf').className = a === 'graf' ? 'sel' : ''; document.getElementById('v_resumo').style.display = a === 'resumo' ? 'block' : 'none'; document.getElementById('v_graf').style.display = a === 'graf' ? 'block' : 'none'; desenharGraficos(); }
 var ZOOM = 24; try { ZOOM = Number(localStorage.getItem('jlt_zoom')) || 24; } catch(e) {}
-function setZoom(n){ ZOOM = n; try { localStorage.setItem('jlt_zoom', n); } catch(e) {} var b = document.getElementById('graficos'); b.dataset.k = ''; desenharGraficos(); }
+var OFF = 0;
+function mover(n){ OFF = Math.max(0, OFF + n); desenharGraficos(); }
+function agora(){ OFF = 0; desenharGraficos(); }
+function setZoom(n){ ZOOM = n; OFF = 0; try { localStorage.setItem('jlt_zoom', n); } catch(e) {} var b = document.getElementById('graficos'); b.dataset.k = ''; desenharGraficos(); }
 function desenharGraficos(){
   if (!D) return;
   var n = D.posicoes.length, bd = document.getElementById('nbadge'); bd.style.display = n ? 'inline-block' : 'none'; bd.textContent = n;
@@ -198,19 +201,32 @@ function desenharGraficos(){
     var z = document.createElement('div'); z.className = 'zoom';
     [[12,'1 hora'],[24,'2 horas'],[48,'4 horas'],[72,'6 horas']].forEach(function(o){ var bt = document.createElement('button'); bt.textContent = o[1]; if (o[0] === ZOOM) bt.className = 'sel'; bt.onclick = function(){ setZoom(o[0]); }; z.appendChild(bt); });
     box.appendChild(z);
-    ativos.forEach(function(a){ var c = document.createElement('div'); c.className = 'gcard'; c.innerHTML = '<div class="gtit"><b></b><span class="mini"></span></div><canvas class="g" role="img"></canvas>'; c.dataset.a = a; box.appendChild(c); });
+    var nav = document.createElement('div'); nav.className = 'zoom';
+    [['◀ Voltar', function(){ mover(Math.max(3, Math.round(ZOOM / 3))); }], ['Agora', agora], ['Avançar ▶', function(){ mover(-Math.max(3, Math.round(ZOOM / 3))); }]].forEach(function(o){ var bt = document.createElement('button'); bt.textContent = o[0]; bt.onclick = o[1]; nav.appendChild(bt); });
+    box.appendChild(nav);
+    ativos.forEach(function(a){ var c = document.createElement('div'); c.className = 'gcard'; c.innerHTML = '<div class="gtit"><b></b><span class="mini"></span></div><canvas class="g" role="img"></canvas><div class="nota" style="text-align:center">Arraste o gráfico para os lados para ver antes e depois</div>'; c.dataset.a = a; box.appendChild(c); arrastar(c.querySelector('canvas')); });
     box.dataset.k = ativos.join('|');
   }
   [].forEach.call(box.querySelectorAll('.gcard'), function(c){
-    var a = c.dataset.a, ops = porAtivo[a], v = (D.graficos[a] || []).slice(-ZOOM);
+    var a = c.dataset.a, ops = porAtivo[a], todos = D.graficos[a] || [];
+    var maxOff = Math.max(0, todos.length - ZOOM); if (OFF > maxOff) OFF = maxOff;
+    var v = todos.slice(Math.max(0, todos.length - ZOOM - OFF), todos.length - OFF);
     var luc = ops.reduce(function(s, x){ return s + x.lucro; }, 0);
     c.querySelector('b').textContent = a + ' · 5 min';
     var sp = c.querySelector('span'); sp.textContent = ops.map(function(x){ return x.tipo + ' ' + String(x.lote).replace('.', ','); }).join(' + ') + ' · ' + usd(luc, true); sp.style.color = luc >= 0 ? 'var(--verde)' : 'var(--verm)';
     var cv = c.querySelector('canvas'); cv.setAttribute('aria-label', 'Gráfico de 5 minutos de ' + a + ' com a operação aberta');
-    velas(cv, v, ops);
+    velas(cv, v, ops, OFF === 0);
   });
 }
-function velas(cv, v, ops){
+function arrastar(cv){
+  var x0 = null, off0 = 0, pend = false;
+  function cwAtual(){ return (cv.clientWidth - 84) / Math.max(1, ZOOM); }
+  cv.addEventListener('pointerdown', function(e){ x0 = e.clientX; off0 = OFF; try { cv.setPointerCapture(e.pointerId); } catch(_) {} });
+  cv.addEventListener('pointermove', function(e){ if (x0 === null) return; var n = Math.round((e.clientX - x0) / cwAtual()); var novo = Math.max(0, off0 + n); if (novo !== OFF) { OFF = novo; if (!pend) { pend = true; requestAnimationFrame(function(){ pend = false; desenharGraficos(); }); } } });
+  function fim(){ x0 = null; }
+  cv.addEventListener('pointerup', fim); cv.addEventListener('pointercancel', fim); cv.addEventListener('pointerleave', fim);
+}
+function velas(cv, v, ops, ultimo){
   var dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight; if (!W) return;
   cv.width = W * dpr; cv.height = H * dpr; var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
   if (!v.length) return;
@@ -253,7 +269,7 @@ function velas(cv, v, ops){
   linha(Number(x0.res), 'rgba(96,165,250,.85)', 'RES', true);
   linha(Number(x0.sup), 'rgba(96,165,250,.85)', 'SUP', true);
   ops.forEach(function(x){ linha(Number(x.tp), '#4ade80', 'ALVO', true); linha(Number(x.sl), '#f87171', 'STOP', true); linha(Number(x.entrada), '#ffc46b', 'ENT', false); });
-  var ul = v[v.length - 1][4]; tags.push({y: Y(ul), y0: Y(ul), cor: '#e8ecf8', txt: fmt(ul), tc: '#0b0f1e', agora: true});
+  var ul = v[v.length - 1][4]; if (ultimo !== false) tags.push({y: Y(ul), y0: Y(ul), cor: '#e8ecf8', txt: fmt(ul), tc: '#0b0f1e', agora: true});
   tags.sort(function(a, b){ return a.y - b.y; });
   var hT = 19;
   for (var k = 1; k < tags.length; k++) if (tags[k].y - tags[k-1].y < hT) tags[k].y = tags[k-1].y + hT;
