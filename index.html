@@ -45,7 +45,7 @@ h1{margin:0;font-size:18px;letter-spacing:.06em;color:var(--ouro);white-space:no
 .item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--borda)}
 .item:first-of-type{border-top:none}
 .tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:6px}
-.tm{background:rgba(255,196,107,.15);color:var(--ouro)} .tp{background:rgba(196,181,253,.16);color:#c4b5fd} .p{color:#c4b5fd} .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px} .g3 .val{font-size:13.5px;white-space:nowrap;letter-spacing:-.02em} .g3 .card{padding:12px 10px} .tc{background:rgba(96,165,250,.15);color:var(--azul)}
+.tm{background:rgba(255,196,107,.15);color:var(--ouro)} .tp{background:rgba(196,181,253,.16);color:#c4b5fd} .p{color:#c4b5fd} .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px} .g3 .val{font-size:13.5px;white-space:nowrap;letter-spacing:-.02em} .g3 .card{padding:12px 10px} .tc{background:rgba(96,165,250,.15);color:var(--azul)} .tsa{background:rgba(240,194,123,.16);color:#f0c27b} .sa{color:#f0c27b} .g4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .det{font-size:11.5px;color:var(--sub);margin-top:3px}
 .vazio{font-size:13px;color:var(--sub);padding:6px 0}
 h2{font-size:13px;color:var(--sub);letter-spacing:.12em;margin:18px 0 8px;font-weight:600}
@@ -121,9 +121,10 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
     <button id="b_semana" onclick="per('semana')">SEMANA</button>
     <button id="b_mes" onclick="per('mes')">MÊS</button>
   </div>
-  <div class="g3">
+  <div class="g4">
     <div class="card"><div class="fonte m">MERCÚRIO</div><div class="val" id="pm">—</div><div class="mini" id="pmd"></div></div>
     <div class="card"><div class="fonte p">PLUTÃO</div><div class="val" id="pp">—</div><div class="mini" id="ppd"></div></div>
+    <div class="card"><div class="fonte sa">SATURNO</div><div class="val" id="ps">—</div><div class="mini" id="psd"></div></div>
     <div class="card"><div class="fonte c">COPY</div><div class="val" id="pc">—</div><div class="mini" id="pcd"></div></div>
   </div>
 
@@ -178,8 +179,8 @@ function avisar(tit, sub, entrada){
 function conferirAlertas(){
   var atual = {}; D.posicoes.forEach(function(x){ atual[x.ticket] = x; });
   if (VISTOS !== null) {
-    Object.keys(atual).forEach(function(k){ if (!VISTOS[k]) { var x = atual[k]; avisar('🔔 Operação em andamento', (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : (x.fonte === 'PLUTAO' ? 'PLUTÃO' : 'COPY')) + ' · ' + x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',') + ' · entrada ' + x.entrada, true); } });
-    Object.keys(VISTOS).forEach(function(k){ if (!atual[k]) { var x = VISTOS[k]; avisar('✅ Operação encerrada', (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : (x.fonte === 'PLUTAO' ? 'PLUTÃO' : 'COPY')) + ' · ' + x.tipo + ' ' + x.ativo + ' · veja o resultado em Últimas operações', false); } });
+    Object.keys(atual).forEach(function(k){ if (!VISTOS[k]) { var x = atual[k]; avisar('🔔 Operação em andamento', NOMEF(x.fonte) + ' · ' + x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',') + ' · entrada ' + x.entrada, true); } });
+    Object.keys(VISTOS).forEach(function(k){ if (!atual[k]) { var x = VISTOS[k]; avisar('✅ Operação encerrada', NOMEF(x.fonte) + ' · ' + x.tipo + ' ' + x.ativo + ' · veja o resultado em Últimas operações', false); } });
   }
   VISTOS = atual;
 }
@@ -311,8 +312,10 @@ function regiao(x){
   }
   return R;
 }
+function NOMEF(f){ return f === 'MERCURIO' ? 'MERCÚRIO' : (f === 'PLUTAO' ? 'PLUTÃO' : (f === 'SATURNO' ? 'SATURNO' : 'COPY')); }
+function TAGF(f){ return f === 'MERCURIO' ? 'tm' : (f === 'PLUTAO' ? 'tp' : (f === 'SATURNO' ? 'tsa' : 'tc')); }
 function analise(x){
-  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', frac = null;
+  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', frac = null;
   var sem_stop = (!copy && x.risco === null);
   if (x.favor === 1) L.push('✅ A favor da tendência (média longa do gráfico)');
   else if (x.favor === -1) L.push('⚠️ Contra a tendência (média longa do gráfico)');
@@ -327,10 +330,11 @@ function analise(x){
     if (x.prog !== null && x.prog >= 0) L.push('📈 Já fez ' + Math.min(x.prog, 100) + '% do caminho até o alvo');
     if (!sem_stop && !x.protegido && x.lucro < 0 && x.risco < 0) { frac = Math.round(100 * x.lucro / x.risco); L.push('📉 Já andou ' + frac + '% do caminho até o stop'); }
   }
-  if (plu) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
+  if (plu || sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
-  if (plu) L.push('📊 PLUTÃO nos testes (2 anos + 7 meses fora): acerta ~3 em 10, mas cada gain paga ~3,5 stops (PF 1,5 a 1,6). Stop é normal, o resultado vem dos gains');
+  if (sat) L.push('📊 SATURNO nos testes (2 anos, ticks reais): acerta ~3 em 10, mas o gain médio (~US$ 199 no 0,03) paga ~4 losses (~US$ 52). PF 1,56 a 1,84. Operação dura ~5 h');
+  else if (plu) L.push('📊 PLUTÃO nos testes (2 anos + 7 meses fora): acerta ~3 em 10, mas cada gain paga ~3,5 stops (PF 1,5 a 1,6). Stop é normal, o resultado vem dos gains');
   else if (!copy) L.push('📊 No teste de 12 meses, 87% das operações do MERCÚRIO fecharam no lucro (PF 2,39)');
   else if (D.hist30 && D.hist30.COPY.ops) { var h = D.hist30.COPY; L.push('📊 Desde ' + dia(D.desde) + ': ' + Math.round(100 * h.ganhos / h.ops) + '% das ' + h.ops + ' operações do Copy fecharam no lucro (resultado ' + usd(h.lucro, true) + ')'); }
   var selo = 'at', txt = '🟡 ATENÇÃO';
@@ -353,15 +357,16 @@ function desenhar(){
   else { pill.className = 'pill off'; set('st', 'SEM SINAL ' + Math.round(idade / 60) + ' MIN'); }
   set('conta', 'conta ' + D.conta + (D.desde ? ' · contando desde ' + dia(D.desde) : '') + ' · atualizado ' + D.hora.substr(11, 8));
   var Z = {lucro: 0, ops: 0, ganhos: 0};
-  var h = D.periodos.hoje, fl = D.flutuante.MERCURIO + D.flutuante.COPY + (D.flutuante.PLUTAO || 0);
-  var hP = h.PLUTAO || Z;
-  var tot = h.MERCURIO.lucro + h.COPY.lucro + hP.lucro + fl;
+  var h = D.periodos.hoje, fl = D.flutuante.MERCURIO + D.flutuante.COPY + (D.flutuante.PLUTAO || 0) + (D.flutuante.SATURNO || 0);
+  var hP = h.PLUTAO || Z, hS = h.SATURNO || Z;
+  var tot = h.MERCURIO.lucro + h.COPY.lucro + hP.lucro + hS.lucro + fl;
   set('hojeTot', usd(tot, true), cls(tot));
-  set('hojeDet', 'Fechado ' + usd(h.MERCURIO.lucro + h.COPY.lucro + hP.lucro, true) + ' · aberto ' + usd(fl, true));
+  set('hojeDet', 'Fechado ' + usd(h.MERCURIO.lucro + h.COPY.lucro + hP.lucro + hS.lucro, true) + ' · aberto ' + usd(fl, true));
   set('saldo', usd(D.saldo)); set('patr', usd(D.patrimonio));
   var p = D.periodos[P];
   set('pm', usd(p.MERCURIO.lucro, true), cls(p.MERCURIO.lucro));
   set('pc', usd(p.COPY.lucro, true), cls(p.COPY.lucro));
+  var pS = p.SATURNO || Z; set('ps', usd(pS.lucro, true), cls(pS.lucro)); set('psd', pS.ops + ' ops · ' + (pS.ops ? Math.round(100 * pS.ganhos / pS.ops) : 0) + '% ganhos');
   var pP = p.PLUTAO || Z; set('pp', usd(pP.lucro, true), cls(pP.lucro)); set('ppd', pP.ops + ' ops · ' + (pP.ops ? Math.round(100 * pP.ganhos / pP.ops) : 0) + '% ganhos');
   set('pmd', p.MERCURIO.ops + ' ops · ' + (p.MERCURIO.ops ? Math.round(100 * p.MERCURIO.ganhos / p.MERCURIO.ops) : 0) + '% ganhos');
   set('pcd', p.COPY.ops + ' ops · ' + (p.COPY.ops ? Math.round(100 * p.COPY.ganhos / p.COPY.ops) : 0) + '% ganhos');
@@ -370,7 +375,7 @@ function desenhar(){
   D.posicoes.forEach(function(x){
     var w = document.createElement('div'); w.className = 'pbox';
     var r = document.createElement('div'); r.className = 'item'; r.style.borderTop = 'none'; r.style.padding = '0';
-    r.innerHTML = '<div><div><span class="tag ' + (x.fonte === 'MERCURIO' ? 'tm' : (x.fonte === 'PLUTAO' ? 'tp' : 'tc')) + '">' + (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : (x.fonte === 'PLUTAO' ? 'PLUTÃO' : 'COPY')) + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
+    r.innerHTML = '<div><div><span class="tag ' + TAGF(x.fonte) + '">' + NOMEF(x.fonte) + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
     r.querySelector('b').textContent = x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',');
     r.querySelector('.det').textContent = 'entrada ' + x.entrada + ' · agora ' + x.atual + ' · desde ' + hora(x.aberta);
     var v = r.querySelector('.val'); v.textContent = usd(x.lucro, true); v.className = 'val ' + cls(x.lucro);
@@ -381,7 +386,7 @@ function desenhar(){
   if (!D.ultimas.length) u.innerHTML = '<div class="vazio">Nenhuma operação nos últimos 7 dias</div>';
   D.ultimas.forEach(function(x){
     var r = document.createElement('div'); r.className = 'item';
-    r.innerHTML = '<div><div><span class="tag ' + (x.fonte === 'MERCURIO' ? 'tm' : (x.fonte === 'PLUTAO' ? 'tp' : 'tc')) + '">' + (x.fonte === 'MERCURIO' ? 'MERCÚRIO' : (x.fonte === 'PLUTAO' ? 'PLUTÃO' : 'COPY')) + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
+    r.innerHTML = '<div><div><span class="tag ' + TAGF(x.fonte) + '">' + NOMEF(x.fonte) + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
     r.querySelector('b').textContent = x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',');
     r.querySelector('.det').textContent = dia(x.hora) + ' ' + hora(x.hora);
     var v = r.querySelector('.val'); v.textContent = usd(x.lucro, true); v.className = 'val ' + cls(x.lucro);
