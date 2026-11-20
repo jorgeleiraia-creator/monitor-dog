@@ -69,7 +69,8 @@ h2{font-size:13px;color:var(--sub);letter-spacing:.12em;margin:18px 0 8px;font-w
 .gcard{background:rgba(255,255,255,.035);border:1px solid var(--borda);border-radius:14px;padding:12px;margin-bottom:12px}
 .gtit{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
 .gtit b{font-size:15px}
-canvas.g{width:100%;height:280px;display:block}
+canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-action:pan-y}
+.zoom{display:flex;gap:6px;margin:0 0 8px}.zoom button{flex:1;background:transparent;color:var(--sub);border:1px solid var(--borda);border-radius:8px;padding:7px 0;font-size:12px;font-weight:700;min-height:36px}.zoom button.sel{color:#111;background:var(--ouro);border-color:var(--ouro)}
 .leg{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--sub);margin-top:8px}
 .leg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .aviso{font-size:11px;color:var(--sub);text-align:center;margin-top:18px}
@@ -99,7 +100,7 @@ canvas.g{width:100%;height:280px;display:block}
   </div>
   <div id="v_graf" style="display:none"><div id="graficos"></div>
     <div class="leg"><span><i style="background:#ffc46b"></i>Entrada</span><span><i style="background:#f87171"></i>Stop</span><span><i style="background:#4ade80"></i>Alvo</span><span><i style="background:#60a5fa"></i>Suporte / resistência</span></div>
-    <div class="nota">Gráfico de 5 minutos (últimas 6 horas) · horários de Brasília</div>
+    <div class="nota">Gráfico de 5 minutos (escolha 1 a 6 horas acima) · horários de Brasília</div>
   </div>
   <div id="v_resumo">
 
@@ -182,17 +183,26 @@ function conferirAlertas(){
   VISTOS = atual;
 }
 function aba(a){ ABA = a; document.getElementById('t_resumo').className = a === 'resumo' ? 'sel' : ''; document.getElementById('t_graf').className = a === 'graf' ? 'sel' : ''; document.getElementById('v_resumo').style.display = a === 'resumo' ? 'block' : 'none'; document.getElementById('v_graf').style.display = a === 'graf' ? 'block' : 'none'; desenharGraficos(); }
+var ZOOM = 24; try { ZOOM = Number(localStorage.getItem('jlt_zoom')) || 24; } catch(e) {}
+function setZoom(n){ ZOOM = n; try { localStorage.setItem('jlt_zoom', n); } catch(e) {} var b = document.getElementById('graficos'); b.dataset.k = ''; desenharGraficos(); }
 function desenharGraficos(){
   if (!D) return;
   var n = D.posicoes.length, bd = document.getElementById('nbadge'); bd.style.display = n ? 'inline-block' : 'none'; bd.textContent = n;
   if (ABA !== 'graf') return;
   var box = document.getElementById('graficos');
-  if (!n || !D.graficos) { box.innerHTML = '<div class="gcard"><div class="vazio">Nenhuma operação aberta agora. O gráfico aparece aqui assim que entrar uma operação.</div></div>'; return; }
+  if (!n || !D.graficos) { box.dataset.k = ''; box.innerHTML = '<div class="gcard"><div class="vazio">Nenhuma operação aberta agora. O gráfico aparece aqui assim que entrar uma operação.</div></div>'; return; }
   var porAtivo = {}; D.posicoes.forEach(function(x){ (porAtivo[x.ativo] = porAtivo[x.ativo] || []).push(x); });
   var ativos = Object.keys(porAtivo);
-  if (box.dataset.k !== ativos.join('|')) { box.innerHTML = ''; ativos.forEach(function(a){ var c = document.createElement('div'); c.className = 'gcard'; c.innerHTML = '<div class="gtit"><b></b><span class="mini"></span></div><canvas class="g" role="img"></canvas>'; c.dataset.a = a; box.appendChild(c); }); box.dataset.k = ativos.join('|'); }
-  [].forEach.call(box.children, function(c){
-    var a = c.dataset.a, ops = porAtivo[a], v = D.graficos[a] || [];
+  if (box.dataset.k !== ativos.join('|')) {
+    box.innerHTML = '';
+    var z = document.createElement('div'); z.className = 'zoom';
+    [[12,'1 hora'],[24,'2 horas'],[48,'4 horas'],[72,'6 horas']].forEach(function(o){ var bt = document.createElement('button'); bt.textContent = o[1]; if (o[0] === ZOOM) bt.className = 'sel'; bt.onclick = function(){ setZoom(o[0]); }; z.appendChild(bt); });
+    box.appendChild(z);
+    ativos.forEach(function(a){ var c = document.createElement('div'); c.className = 'gcard'; c.innerHTML = '<div class="gtit"><b></b><span class="mini"></span></div><canvas class="g" role="img"></canvas>'; c.dataset.a = a; box.appendChild(c); });
+    box.dataset.k = ativos.join('|');
+  }
+  [].forEach.call(box.querySelectorAll('.gcard'), function(c){
+    var a = c.dataset.a, ops = porAtivo[a], v = (D.graficos[a] || []).slice(-ZOOM);
     var luc = ops.reduce(function(s, x){ return s + x.lucro; }, 0);
     c.querySelector('b').textContent = a + ' · 5 min';
     var sp = c.querySelector('span'); sp.textContent = ops.map(function(x){ return x.tipo + ' ' + String(x.lote).replace('.', ','); }).join(' + ') + ' · ' + usd(luc, true); sp.style.color = luc >= 0 ? 'var(--verde)' : 'var(--verm)';
@@ -204,27 +214,59 @@ function velas(cv, v, ops){
   var dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight; if (!W) return;
   cv.width = W * dpr; cv.height = H * dpr; var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
   if (!v.length) return;
-  var dirW = 62, baixo = 18, pw = W - dirW, ph = H - baixo;
+  var F = '12px -apple-system,Segoe UI,Roboto,sans-serif', FB = 'bold 12px -apple-system,Segoe UI,Roboto,sans-serif';
+  var dirW = 84, baixo = 22, topo = 6, pw = W - dirW, ph = H - baixo;
+  // escala: velas visiveis + entrada; stop/alvo so se nao esmagarem o grafico
   var lo = Infinity, hi = -Infinity; v.forEach(function(k){ lo = Math.min(lo, k[3]); hi = Math.max(hi, k[2]); });
-  var x0 = ops[0];
-  ops.forEach(function(x){ [Number(x.entrada)].concat(Number(x.sl) > 0 ? [Number(x.sl)] : []).concat(Number(x.tp) > 0 ? [Number(x.tp)] : []).forEach(function(p){ lo = Math.min(lo, p); hi = Math.max(hi, p); }); });
-  var pad = (hi - lo) * 0.06 || 1; lo -= pad; hi += pad;
-  function Y(p){ return ph - (p - lo) / (hi - lo) * ph; }
-  g.strokeStyle = 'rgba(255,255,255,.06)'; g.lineWidth = 1; g.fillStyle = '#9aa6c4'; g.font = '11px -apple-system,Segoe UI,Roboto,sans-serif'; g.textAlign = 'left';
-  for (var i = 0; i <= 4; i++) { var p = lo + (hi - lo) * i / 4, y = Y(p); g.beginPath(); g.moveTo(0, y); g.lineTo(pw, y); g.stroke(); g.fillText(fmt(p), pw + 6, Math.min(ph - 2, Math.max(11, y + 4))); }
-  var cw = pw / v.length, bw = Math.max(1, cw * 0.62);
+  ops.forEach(function(x){ var e = Number(x.entrada); lo = Math.min(lo, e); hi = Math.max(hi, e); });
+  var faixa = hi - lo || 1;
+  ops.forEach(function(x){ [Number(x.sl), Number(x.tp)].forEach(function(p){ if (p > 0 && p > lo - faixa * 0.6 && p < hi + faixa * 0.6) { lo = Math.min(lo, p); hi = Math.max(hi, p); } }); });
+  var pad = (hi - lo) * 0.07 || 1; lo -= pad; hi += pad;
+  function Y(p){ return topo + (ph - topo) - (p - lo) / (hi - lo) * (ph - topo); }
+  // grade
+  g.strokeStyle = 'rgba(255,255,255,.06)'; g.lineWidth = 1; g.font = F;
+  var grade = [];
+  for (var i = 0; i <= 5; i++) { var p = lo + (hi - lo) * i / 5, y = Y(p); g.beginPath(); g.moveTo(0, y); g.lineTo(pw, y); g.stroke(); grade.push([y, p]); }
+  // velas
+  var cw = pw / v.length, bw = Math.max(2, Math.min(18, cw * 0.66));
+  var passoHora = Math.max(1, Math.round(v.length / 4));
+  var ent = ops[0] && ops[0].aberta ? hora(ops[0].aberta) : '';
+  var iEnt = -1;
+  if (ent && /^\d\d:\d\d$/.test(ent)) { var hh = +ent.slice(0,2), mm = +ent.slice(3,5); mm = mm - mm % 5; var alvo = ('0'+hh).slice(-2) + ':' + ('0'+mm).slice(-2); v.forEach(function(k, i){ if (k[0] === alvo) iEnt = i; }); }
+  if (iEnt >= 0) { var xe = iEnt * cw + cw / 2; g.save(); g.strokeStyle = 'rgba(255,196,107,.45)'; g.setLineDash([3, 4]); g.beginPath(); g.moveTo(xe, topo); g.lineTo(xe, ph); g.stroke(); g.restore(); }
   v.forEach(function(k, i){
     var cx = i * cw + cw / 2, up = k[4] >= k[1];
-    g.strokeStyle = g.fillStyle = up ? '#4ade80' : '#f87171';
+    g.strokeStyle = g.fillStyle = up ? '#4ade80' : '#f87171'; g.lineWidth = Math.max(1, Math.min(2, cw * 0.12));
     g.beginPath(); g.moveTo(cx, Y(k[2])); g.lineTo(cx, Y(k[3])); g.stroke();
-    var yo = Y(k[1]), yc = Y(k[4]); g.fillRect(cx - bw / 2, Math.min(yo, yc), bw, Math.max(1, Math.abs(yc - yo)));
-    if (i % 12 === 0) { g.fillStyle = '#9aa6c4'; g.textAlign = 'center'; g.fillText(k[0], cx, H - 4); g.textAlign = 'left'; }
+    var yo = Y(k[1]), yc = Y(k[4]); g.fillRect(cx - bw / 2, Math.min(yo, yc), bw, Math.max(1.5, Math.abs(yc - yo)));
+    if ((v.length - 1 - i) % passoHora === 0) { g.fillStyle = '#9aa6c4'; g.font = F; g.textAlign = 'center'; g.fillText(k[0], Math.min(pw - 18, Math.max(18, cx)), H - 5); g.textAlign = 'left'; }
   });
-  function linha(p, cor, txt, tracej){ if (!(p > 0) || p < lo || p > hi) return; var y = Y(p); g.save(); g.strokeStyle = cor; g.lineWidth = 1.5; if (tracej) g.setLineDash([6, 4]); g.beginPath(); g.moveTo(0, y); g.lineTo(pw, y); g.stroke(); g.restore(); g.fillStyle = cor; g.fillRect(pw, y - 9, dirW, 18); g.fillStyle = '#0b0f1e'; g.font = 'bold 11px -apple-system,Segoe UI,Roboto,sans-serif'; g.fillText(txt, pw + 4, y + 4); g.font = '11px -apple-system,Segoe UI,Roboto,sans-serif'; }
-  linha(Number(x0.sup), 'rgba(96,165,250,.8)', 'SUP', true);
-  linha(Number(x0.res), 'rgba(96,165,250,.8)', 'RES', true);
-  ops.forEach(function(x){ linha(Number(x.sl), '#f87171', 'STOP', true); linha(Number(x.tp), '#4ade80', 'ALVO', true); linha(Number(x.entrada), '#ffc46b', 'ENTRADA', false); });
-  var ul = v[v.length - 1][4], yu = Y(ul); g.fillStyle = '#e8ecf8'; g.fillRect(pw, yu - 9, dirW, 18); g.fillStyle = '#0b0f1e'; g.font = 'bold 11px -apple-system,Segoe UI,Roboto,sans-serif'; g.fillText(fmt(ul), pw + 4, yu + 4);
+  // linhas e etiquetas sem sobrepor
+  var tags = [];
+  function linha(p, cor, txt, tracej, txtCor){
+    if (!(p > 0)) return;
+    var fora = p < lo ? -1 : (p > hi ? 1 : 0), y = fora ? (fora > 0 ? topo + 9 : ph - 9) : Y(p);
+    if (!fora) { g.save(); g.strokeStyle = cor; g.lineWidth = 1.6; if (tracej) g.setLineDash([7, 5]); g.beginPath(); g.moveTo(0, y); g.lineTo(pw, y); g.stroke(); g.restore(); }
+    tags.push({y: y, y0: y, cor: cor, txt: (fora ? (fora > 0 ? '↑ ' : '↓ ') : '') + txt + ' ' + fmt(p), tc: txtCor || '#0b0f1e'});
+  }
+  var x0 = ops[0];
+  linha(Number(x0.res), 'rgba(96,165,250,.85)', 'RES', true);
+  linha(Number(x0.sup), 'rgba(96,165,250,.85)', 'SUP', true);
+  ops.forEach(function(x){ linha(Number(x.tp), '#4ade80', 'ALVO', true); linha(Number(x.sl), '#f87171', 'STOP', true); linha(Number(x.entrada), '#ffc46b', 'ENT', false); });
+  var ul = v[v.length - 1][4]; tags.push({y: Y(ul), y0: Y(ul), cor: '#e8ecf8', txt: fmt(ul), tc: '#0b0f1e', agora: true});
+  tags.sort(function(a, b){ return a.y - b.y; });
+  var hT = 19;
+  for (var k = 1; k < tags.length; k++) if (tags[k].y - tags[k-1].y < hT) tags[k].y = tags[k-1].y + hT;
+  for (var k = tags.length - 1; k >= 0; k--) { var lim = (k === tags.length - 1) ? ph - hT / 2 : tags[k+1].y - hT; if (tags[k].y > lim) tags[k].y = lim; }
+  if (tags.length && tags[0].y < topo + hT / 2) { tags[0].y = topo + hT / 2; for (var k = 1; k < tags.length; k++) if (tags[k].y - tags[k-1].y < hT) tags[k].y = tags[k-1].y + hT; }
+  // precos da grade so onde nao tem etiqueta
+  g.fillStyle = '#9aa6c4'; g.font = F;
+  grade.forEach(function(q){ var livre = tags.every(function(t){ return Math.abs(t.y - q[0]) > hT; }); if (livre) g.fillText(fmt(q[1]), pw + 6, Math.min(ph - 3, Math.max(12, q[0] + 4))); });
+  tags.forEach(function(t){
+    if (Math.abs(t.y - t.y0) > 1) { g.strokeStyle = t.cor; g.lineWidth = 1; g.beginPath(); g.moveTo(pw - 6, t.y0); g.lineTo(pw, t.y); g.stroke(); }
+    g.fillStyle = t.cor; g.fillRect(pw, t.y - hT / 2 + 1, dirW, hT - 2);
+    g.fillStyle = t.tc; g.font = FB; g.fillText(t.txt, pw + 4, t.y + 4, dirW - 6);
+  });
 }
 window.addEventListener('resize', desenharGraficos);
 function fmt(v){ return Number(v).toLocaleString('pt-BR', {maximumFractionDigits: 2}); }
