@@ -184,10 +184,12 @@ function conferirAlertas(){
 }
 function aba(a){ ABA = a; document.getElementById('t_resumo').className = a === 'resumo' ? 'sel' : ''; document.getElementById('t_graf').className = a === 'graf' ? 'sel' : ''; document.getElementById('v_resumo').style.display = a === 'resumo' ? 'block' : 'none'; document.getElementById('v_graf').style.display = a === 'graf' ? 'block' : 'none'; desenharGraficos(); }
 var ZOOM = 24; try { ZOOM = Number(localStorage.getItem('jlt_zoom')) || 24; } catch(e) {}
-var OFF = 0;
-function mover(n){ OFF = Math.max(0, OFF + n); desenharGraficos(); }
-function agora(){ OFF = 0; desenharGraficos(); }
-function setZoom(n){ ZOOM = n; OFF = 0; try { localStorage.setItem('jlt_zoom', n); } catch(e) {} var b = document.getElementById('graficos'); b.dataset.k = ''; desenharGraficos(); }
+function offPadrao(){ return -Math.max(2, Math.round(ZOOM * 0.15)); }
+function offMin(){ return -Math.round(ZOOM * 0.5); }
+var OFF = offPadrao();
+function mover(n){ OFF = Math.max(offMin(), OFF + n); desenharGraficos(); }
+function agora(){ OFF = offPadrao(); desenharGraficos(); }
+function setZoom(n){ ZOOM = n; OFF = offPadrao(); try { localStorage.setItem('jlt_zoom', n); } catch(e) {} var b = document.getElementById('graficos'); b.dataset.k = ''; desenharGraficos(); }
 function desenharGraficos(){
   if (!D) return;
   var n = D.posicoes.length, bd = document.getElementById('nbadge'); bd.style.display = n ? 'inline-block' : 'none'; bd.textContent = n;
@@ -204,29 +206,30 @@ function desenharGraficos(){
     var nav = document.createElement('div'); nav.className = 'zoom';
     [['◀ Voltar', function(){ mover(Math.max(3, Math.round(ZOOM / 3))); }], ['Agora', agora], ['Avançar ▶', function(){ mover(-Math.max(3, Math.round(ZOOM / 3))); }]].forEach(function(o){ var bt = document.createElement('button'); bt.textContent = o[0]; bt.onclick = o[1]; nav.appendChild(bt); });
     box.appendChild(nav);
-    ativos.forEach(function(a){ var c = document.createElement('div'); c.className = 'gcard'; c.innerHTML = '<div class="gtit"><b></b><span class="mini"></span></div><canvas class="g" role="img"></canvas><div class="nota" style="text-align:center">Arraste o gráfico para os lados para ver antes e depois</div>'; c.dataset.a = a; box.appendChild(c); arrastar(c.querySelector('canvas')); });
+    ativos.forEach(function(a){ var c = document.createElement('div'); c.className = 'gcard'; c.innerHTML = '<div class="gtit"><b></b><span class="mini"></span></div><canvas class="g" role="img"></canvas><div class="nota" style="text-align:center">Arraste para os lados · Agora volta para a vela atual com espaço à direita</div>'; c.dataset.a = a; box.appendChild(c); arrastar(c.querySelector('canvas')); });
     box.dataset.k = ativos.join('|');
   }
   [].forEach.call(box.querySelectorAll('.gcard'), function(c){
     var a = c.dataset.a, ops = porAtivo[a], todos = D.graficos[a] || [];
     var maxOff = Math.max(0, todos.length - ZOOM); if (OFF > maxOff) OFF = maxOff;
-    var v = todos.slice(Math.max(0, todos.length - ZOOM - OFF), todos.length - OFF);
+    var fimV = todos.length - Math.max(0, OFF), qtd = ZOOM - Math.max(0, -OFF);
+    var v = todos.slice(Math.max(0, fimV - qtd), fimV);
     var luc = ops.reduce(function(s, x){ return s + x.lucro; }, 0);
     c.querySelector('b').textContent = a + ' · 5 min';
     var sp = c.querySelector('span'); sp.textContent = ops.map(function(x){ return x.tipo + ' ' + String(x.lote).replace('.', ','); }).join(' + ') + ' · ' + usd(luc, true); sp.style.color = luc >= 0 ? 'var(--verde)' : 'var(--verm)';
     var cv = c.querySelector('canvas'); cv.setAttribute('aria-label', 'Gráfico de 5 minutos de ' + a + ' com a operação aberta');
-    velas(cv, v, ops, OFF === 0);
+    velas(cv, v, ops, OFF <= 0, ZOOM);
   });
 }
 function arrastar(cv){
   var x0 = null, off0 = 0, pend = false;
   function cwAtual(){ return (cv.clientWidth - 84) / Math.max(1, ZOOM); }
   cv.addEventListener('pointerdown', function(e){ x0 = e.clientX; off0 = OFF; try { cv.setPointerCapture(e.pointerId); } catch(_) {} });
-  cv.addEventListener('pointermove', function(e){ if (x0 === null) return; var n = Math.round((e.clientX - x0) / cwAtual()); var novo = Math.max(0, off0 + n); if (novo !== OFF) { OFF = novo; if (!pend) { pend = true; requestAnimationFrame(function(){ pend = false; desenharGraficos(); }); } } });
+  cv.addEventListener('pointermove', function(e){ if (x0 === null) return; var n = Math.round((e.clientX - x0) / cwAtual()); var novo = Math.max(offMin(), off0 + n); if (novo !== OFF) { OFF = novo; if (!pend) { pend = true; requestAnimationFrame(function(){ pend = false; desenharGraficos(); }); } } });
   function fim(){ x0 = null; }
   cv.addEventListener('pointerup', fim); cv.addEventListener('pointercancel', fim); cv.addEventListener('pointerleave', fim);
 }
-function velas(cv, v, ops, ultimo){
+function velas(cv, v, ops, ultimo, slots){
   var dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight; if (!W) return;
   cv.width = W * dpr; cv.height = H * dpr; var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
   if (!v.length) return;
@@ -244,7 +247,7 @@ function velas(cv, v, ops, ultimo){
   var grade = [];
   for (var i = 0; i <= 5; i++) { var p = lo + (hi - lo) * i / 5, y = Y(p); g.beginPath(); g.moveTo(0, y); g.lineTo(pw, y); g.stroke(); grade.push([y, p]); }
   // velas
-  var cw = pw / v.length, bw = Math.max(2, Math.min(18, cw * 0.66));
+  var cw = pw / Math.max(v.length, slots || v.length), bw = Math.max(2, Math.min(18, cw * 0.66));
   var passoHora = Math.max(1, Math.round(v.length / 4));
   var ent = ops[0] && ops[0].aberta ? hora(ops[0].aberta) : '';
   var iEnt = -1;
