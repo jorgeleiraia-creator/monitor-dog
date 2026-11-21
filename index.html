@@ -59,7 +59,7 @@ h1{margin:0;font-family:Orbitron,sans-serif;font-weight:800;font-size:clamp(11px
 .tag{font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:999px;margin-right:6px;letter-spacing:.08em;font-family:Orbitron,sans-serif;border:1px solid currentColor}
 .g4{display:grid;grid-template-columns:1fr 1fr;gap:9px}.g4 .full{grid-column:1/-1}
 .rob{overflow:hidden;padding:12px 12px 12px 12px}
-.rob .pl{position:absolute;right:-14px;top:-14px;width:58px;height:58px;border-radius:50%;opacity:.9}
+.rob .pl{position:absolute;right:-8px;top:-8px;height:64px;filter:drop-shadow(0 0 10px rgba(255,255,255,.12))}
 .rob .nm{display:flex;align-items:center;gap:7px;font-family:Orbitron,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em}
 .rob .ds{font-size:10px;color:var(--sub);letter-spacing:.06em;margin-top:2px;position:relative}
 .det{font-size:11.5px;color:var(--sub);margin-top:3px}
@@ -326,14 +326,48 @@ function regiao(x){
   return R;
 }
 var ROBOS = [
-  {k:'MERCURIO', n:'MERCÚRIO', c:'#ff6b5b', d:'Ouro'},
-  {k:'MARTE',    n:'MARTE',    c:'#fb923c', d:'GER40'},
-  {k:'JUPITER',  n:'JÚPITER',  c:'#a3e635', d:'Nasdaq'},
-  {k:'SATURNO',  n:'SATURNO',  c:'#f0c27b', d:'Ouro', anel:true},
-  {k:'NETUNO',   n:'NETUNO',   c:'#22d3ee', d:'GER40'},
-  {k:'PLUTAO',   n:'PLUTÃO',   c:'#c4b5fd', d:'Ouro'},
+  {k:'MERCURIO', n:'MERCÚRIO', c:'#a8a29e', d:'Ouro'},
+  {k:'MARTE',    n:'MARTE',    c:'#e8743f', d:'GER40'},
+  {k:'JUPITER',  n:'JÚPITER',  c:'#d9a66b', d:'Nasdaq'},
+  {k:'SATURNO',  n:'SATURNO',  c:'#e6cf98', d:'Ouro'},
+  {k:'NETUNO',   n:'NETUNO',   c:'#5b8cff', d:'GER40'},
+  {k:'PLUTAO',   n:'PLUTÃO',   c:'#d8bc98', d:'Ouro'},
   {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
 ];
+function planetaSVG(k){
+  var id='g'+k, sh='<radialGradient id="'+id+'s" cx="30%" cy="28%" r="80%"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>';
+  var clip='<clipPath id="'+id+'c"><circle cx="32" cy="32" r="28"/></clipPath>', sombra='<circle cx="32" cy="32" r="28" fill="url(#'+id+'s)"/>';
+  var corpo='', defs='', w=64, vb='0 0 64 64', antes='', depois='';
+  if(k==='MERCURIO'){
+    defs='<radialGradient id="'+id+'b" cx="40%" cy="38%" r="70%"><stop offset="0" stop-color="#a9a6a1"/><stop offset=".6" stop-color="#77726c"/><stop offset="1" stop-color="#4a4642"/></radialGradient>';
+    corpo='<circle cx="32" cy="32" r="28" fill="url(#'+id+'b)"/><g fill="#5a5651" opacity=".75"><circle cx="22" cy="22" r="5"/><circle cx="40" cy="18" r="3"/><circle cx="44" cy="38" r="6"/><circle cx="26" cy="44" r="4"/><circle cx="34" cy="30" r="2.2"/><circle cx="15" cy="34" r="2.5"/><circle cx="48" cy="26" r="2"/></g><g fill="none" stroke="#c4c0b9" stroke-width=".8" opacity=".5"><circle cx="22" cy="22" r="5"/><circle cx="44" cy="38" r="6"/><circle cx="26" cy="44" r="4"/></g>';
+  } else if(k==='MARTE'){
+    defs='<radialGradient id="'+id+'b" cx="40%" cy="38%" r="70%"><stop offset="0" stop-color="#e8875a"/><stop offset=".55" stop-color="#c1532a"/><stop offset="1" stop-color="#7a2a12"/></radialGradient>';
+    corpo='<circle cx="32" cy="32" r="28" fill="url(#'+id+'b)"/><g fill="#6e2a14" opacity=".55"><path d="M10 30c6-4 12-2 16 2s10 3 14-1 10-3 15 1v6c-6-3-10-1-15 2s-11 2-15-1-9-3-15 0z"/><ellipse cx="40" cy="20" rx="7" ry="3"/><ellipse cx="22" cy="46" rx="8" ry="3"/></g><ellipse cx="32" cy="6.5" rx="9" ry="3.2" fill="#f4ece6" opacity=".85"/>';
+  } else if(k==='JUPITER'){
+    defs='<linearGradient id="'+id+'b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a27c"/><stop offset=".14" stop-color="#e9dcc6"/><stop offset=".24" stop-color="#b9875e"/><stop offset=".34" stop-color="#efe3cf"/><stop offset=".44" stop-color="#c79a70"/><stop offset=".52" stop-color="#f1e6d4"/><stop offset=".62" stop-color="#a87650"/><stop offset=".72" stop-color="#ead9bf"/><stop offset=".84" stop-color="#bb8f68"/><stop offset="1" stop-color="#d9c2a3"/></linearGradient>';
+    corpo='<circle cx="32" cy="32" r="28" fill="url(#'+id+'b)"/><ellipse cx="40" cy="39" rx="6" ry="3.4" fill="#b8573e"/><ellipse cx="40" cy="39" rx="3.6" ry="1.9" fill="#d2795d"/><path d="M4 26q14 3 28 0t28 0" stroke="#fff" stroke-opacity=".18" fill="none"/>';
+  } else if(k==='SATURNO'){
+    w=96; vb='-16 0 96 64';
+    defs='<linearGradient id="'+id+'b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8ad7a"/><stop offset=".25" stop-color="#ead8ab"/><stop offset=".4" stop-color="#d6bb84"/><stop offset=".55" stop-color="#efe0b8"/><stop offset=".7" stop-color="#cfb27c"/><stop offset="1" stop-color="#b8975f"/></linearGradient><linearGradient id="'+id+'r" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#bfa577" stop-opacity=".2"/><stop offset=".5" stop-color="#e6d2a4"/><stop offset="1" stop-color="#bfa577" stop-opacity=".2"/></linearGradient>';
+    antes='<g transform="rotate(-16 32 32)"><ellipse cx="32" cy="32" rx="46" ry="11" fill="none" stroke="url(#'+id+'r)" stroke-width="5" opacity=".9"/><ellipse cx="32" cy="32" rx="39" ry="8.5" fill="none" stroke="#d9c393" stroke-width="2" opacity=".7"/></g>';
+    corpo='<circle cx="32" cy="32" r="22" fill="url(#'+id+'b)"/>';
+    depois='<g transform="rotate(-16 32 32)" clip-path="url(#'+id+'f)"><ellipse cx="32" cy="32" rx="46" ry="11" fill="none" stroke="url(#'+id+'r)" stroke-width="5"/><ellipse cx="32" cy="32" rx="39" ry="8.5" fill="none" stroke="#d9c393" stroke-width="2" opacity=".8"/></g>';
+    clip='<clipPath id="'+id+'c"><circle cx="32" cy="32" r="22"/></clipPath><clipPath id="'+id+'f"><rect x="-20" y="32" width="110" height="40"/></clipPath>';
+    sombra='<circle cx="32" cy="32" r="22" fill="url(#'+id+'s)"/>';
+  } else if(k==='NETUNO'){
+    defs='<radialGradient id="'+id+'b" cx="40%" cy="38%" r="72%"><stop offset="0" stop-color="#7fa6ff"/><stop offset=".55" stop-color="#3a5fd6"/><stop offset="1" stop-color="#1a2a7a"/></radialGradient>';
+    corpo='<circle cx="32" cy="32" r="28" fill="url(#'+id+'b)"/><g stroke="#a9c4ff" stroke-opacity=".25" fill="none"><path d="M4 22q28 4 56 0"/><path d="M4 40q28 4 56 0"/></g><ellipse cx="24" cy="36" rx="5" ry="2.6" fill="#152266" opacity=".7"/><ellipse cx="27" cy="33" rx="3" ry=".9" fill="#e6eeff" opacity=".7"/>';
+  } else if(k==='PLUTAO'){
+    defs='<radialGradient id="'+id+'b" cx="40%" cy="38%" r="72%"><stop offset="0" stop-color="#e6d3b8"/><stop offset=".6" stop-color="#bfa07c"/><stop offset="1" stop-color="#7d5f45"/></radialGradient>';
+    corpo='<circle cx="32" cy="32" r="28" fill="url(#'+id+'b)"/><path d="M14 38c-4-8 2-16 8-14 6 2 4 12-2 18z" fill="#7a4f37" opacity=".7"/><path transform="translate(-7 2)" d="M38 34c-2-5 1-10 5-10 3 0 5 3 5 3 0 0 2-3 5-3 4 0 6 5 4 10-2 6-9 10-9 10s-8-4-10-10z" fill="#f6efe4" opacity=".92"/>';
+  } else {   // COPY: satelite retransmitindo o sinal
+    w=72; vb='-4 0 72 64';
+    defs='<linearGradient id="'+id+'p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93c5fd"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient><linearGradient id="'+id+'m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1f5f9"/><stop offset="1" stop-color="#64748b"/></linearGradient>';
+    return '<svg class="pl" viewBox="'+vb+'" width="'+w+'" height="64" aria-hidden="true" style="width:'+w+'px"><defs>'+defs+'</defs><g transform="rotate(-25 32 32)"><rect x="2" y="26" width="20" height="12" rx="1.5" fill="url(#'+id+'p)" stroke="#bfdbfe" stroke-width=".6"/><path d="M7 26v12M12 26v12M17 26v12M2 32h20" stroke="#bfdbfe" stroke-opacity=".5" stroke-width=".5"/><rect x="42" y="26" width="20" height="12" rx="1.5" fill="url(#'+id+'p)" stroke="#bfdbfe" stroke-width=".6"/><path d="M47 26v12M52 26v12M57 26v12M42 32h20" stroke="#bfdbfe" stroke-opacity=".5" stroke-width=".5"/><path d="M22 32h4M38 32h4" stroke="#cbd5e1" stroke-width="1.4"/><rect x="26" y="24" width="12" height="16" rx="2.5" fill="url(#'+id+'m)"/><path d="M32 24v-7" stroke="#cbd5e1" stroke-width="1.2"/><path d="M26.5 14a7 4 0 0 0 11 0z" fill="#e2e8f0"/></g><g fill="none" stroke="#60a5fa" stroke-linecap="round"><path d="M50 8a10 10 0 0 1 6 6" opacity=".9"/><path d="M50 3a15 15 0 0 1 11 11" opacity=".55"/><path d="M50-2a20 20 0 0 1 16 16" opacity=".3"/></g></svg>';
+  }
+  return '<svg class="pl" viewBox="'+vb+'" width="'+w+'" height="64" aria-hidden="true" style="width:'+w+'px"><defs>'+defs+sh+clip+'</defs>'+antes+'<g clip-path="url(#'+id+'c)">'+corpo+sombra+'</g>'+depois+'</svg>';
+}
 function ROB(f){ for (var i = 0; i < ROBOS.length; i++) if (ROBOS[i].k === f) return ROBOS[i]; return ROBOS[ROBOS.length - 1]; }
 function NOMEF(f){ return ROB(f).n; }
 function tagHtml(f){ var r = ROB(f); return '<span class="tag" style="color:' + r.c + ';background:' + r.c + '1f">' + r.n + '</span>'; }
@@ -341,8 +375,7 @@ function montarRobos(){
   var g = document.getElementById('robos'); g.innerHTML = '';
   ROBOS.forEach(function(r){
     var c = document.createElement('div'); c.className = 'card rob' + (r.full ? ' full' : ''); c.style.borderColor = r.c + '40';
-    var pl = r.k === 'COPY' ? 'radial-gradient(circle at 35% 35%,#dbeafe,' + r.c + ' 45%,#0b1530 75%)' : 'radial-gradient(circle at 32% 30%,#fff,' + r.c + ' 38%,' + r.c + '55 62%,transparent 72%)';
-    c.innerHTML = '<div class="pl" style="background:' + pl + ';box-shadow:0 0 26px ' + r.c + '55"></div>' + (r.anel ? '<div style="position:absolute;right:-26px;top:9px;width:82px;height:18px;border-radius:50%;border:2px solid ' + r.c + '99;transform:rotate(-18deg)"></div>' : '') +
+    c.innerHTML = planetaSVG(r.k) +
       '<div class="nm" style="color:' + r.c + ';text-shadow:0 0 12px ' + r.c + '66">' + r.n + '</div><div class="ds">' + (r.d || '&nbsp;') + '</div><div class="val" id="v_' + r.k + '">—</div><div class="mini" id="d_' + r.k + '"></div>';
     g.appendChild(c);
   });
