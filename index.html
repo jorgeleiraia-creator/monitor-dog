@@ -6,78 +6,97 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icone-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#070a16">
+<meta name="theme-color" content="#03040b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#05070f;--card:#0f1528;--borda:#222b45;--txt:#e8ecf8;--sub:#9aa6c4;--ouro:#ffc46b;--verde:#4ade80;--verm:#f87171;--azul:#60a5fa}
+:root{--bg:#03040b;--card:rgba(14,20,44,.55);--borda:rgba(120,150,255,.16);--txt:#e8ecf8;--sub:#8fa0c8;--ouro:#ffc46b;--verde:#4ade80;--verm:#f87171;--azul:#60a5fa;--neon:#7dd3fc}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(120% 60% at 50% 0%,#121a33 0%,#070a16 55%,#04050b 100%);background-attachment:fixed;color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Inter,sans-serif;min-height:100vh}
-.wrap{max-width:520px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
-#login{display:none;max-width:420px;margin:0 auto;padding:80px 20px}
-#login input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--borda);background:#0f1528;color:var(--txt);font-size:16px;margin:14px 0}
-#login button{width:100%;padding:14px;border-radius:12px;border:0;background:var(--ouro);color:#111;font-weight:700;font-size:15px;min-height:48px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-h1{margin:0;font-size:18px;letter-spacing:.06em;color:var(--ouro);white-space:nowrap}
-.sub{font-size:11px;color:var(--sub);margin-top:2px}
-.pill{white-space:nowrap;display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.05em;border:1px solid}
+html{background:#03040b}
+body{margin:0;background:radial-gradient(90% 50% at 50% -5%,rgba(255,170,60,.16) 0%,rgba(80,60,180,.10) 35%,transparent 70%),radial-gradient(70% 50% at 100% 100%,rgba(34,211,238,.07),transparent 70%),#03040b;background-attachment:fixed;color:var(--txt);font-family:"Exo 2",-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;overflow-x:hidden}
+#ceu{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap,#login{position:relative;z-index:1}
+.wrap{max-width:540px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+#login{display:none;max-width:420px;margin:0 auto;padding:70px 20px;text-align:center}
+#login input{width:100%;padding:14px;border-radius:14px;border:1px solid var(--borda);background:rgba(10,14,32,.8);color:var(--txt);font-size:16px;margin:14px 0;font-family:inherit}
+#login button{width:100%;padding:14px;border-radius:14px;border:0;background:linear-gradient(90deg,#ffb347,#ff7a3d);color:#140a00;font-weight:800;font-size:15px;min-height:48px;letter-spacing:.12em;font-family:Orbitron,sans-serif;box-shadow:0 0 24px rgba(255,150,60,.45)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.marca{display:flex;align-items:center;gap:10px;min-width:0}
+.sol{width:46px;height:46px;flex:none}
+.sol .orb{transform-origin:50px 50px}
+.o1{animation:gira 6s linear infinite}.o2{animation:gira 11s linear infinite}.o3{animation:gira 19s linear infinite}.o4{animation:gira 30s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.o1,.o2,.o3,.o4{animation:none}}
+h1{margin:0;font-family:Orbitron,sans-serif;font-weight:800;font-size:clamp(11px,3vw,16px);letter-spacing:.06em;white-space:nowrap;background:linear-gradient(90deg,#ffd38a,#ff9a4d 55%,#ff6b8b);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(255,160,70,.35))}
+.sub{font-size:11px;color:var(--sub);margin-top:3px;overflow:hidden;text-overflow:ellipsis}
+.pill{white-space:nowrap;display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.12em;border:1px solid;font-family:Orbitron,sans-serif}
 .dot{width:8px;height:8px;border-radius:50%}
-.on{color:#86efac;border-color:rgba(74,222,128,.45);background:rgba(74,222,128,.1)}
+.on{color:#86efac;border-color:rgba(74,222,128,.45);background:rgba(74,222,128,.08)}
 .on .dot{background:var(--verde);animation:ping 1.8s infinite}
-.off{color:#fca5a5;border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.1)}
+.off{color:#fca5a5;border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.08)}
 .off .dot{background:var(--verm)}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}100%{box-shadow:0 0 0 9px rgba(74,222,128,0)}}
-.card{background:rgba(255,255,255,.035);border:1px solid var(--borda);border-radius:14px;padding:14px;margin-bottom:12px}
-.lbl{font-size:10.5px;color:var(--sub);letter-spacing:.12em;text-transform:uppercase}
-.big{font-size:34px;font-weight:700;margin-top:4px}
+.card,.gcard{position:relative;background:linear-gradient(160deg,rgba(30,40,90,.38),rgba(8,12,30,.55));border:1px solid var(--borda);border-radius:18px;padding:14px;margin-bottom:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 30px rgba(0,0,0,.35)}
+.hero{overflow:hidden;border-color:rgba(255,180,90,.28)}
+.hero:before{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,170,60,.35),rgba(255,120,40,.08) 55%,transparent 70%)}
+.hero:after{content:"";position:absolute;right:-110px;top:-110px;width:280px;height:280px;border-radius:50%;border:1px dashed rgba(255,200,120,.18)}
+.lbl{font-size:10px;color:var(--sub);letter-spacing:.18em;text-transform:uppercase;font-family:Orbitron,sans-serif}
+.big{font-size:36px;font-weight:700;margin-top:6px;font-family:Orbitron,sans-serif;letter-spacing:.02em}
 .row{display:flex;justify-content:space-between;gap:10px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.val{font-size:18px;font-weight:700;margin-top:4px}
-.pos{color:var(--verde)} .neg{color:var(--verm)} .neu{color:var(--txt)}
+.val{font-size:17px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.pos{color:var(--verde);text-shadow:0 0 12px rgba(74,222,128,.35)} .neg{color:var(--verm);text-shadow:0 0 12px rgba(248,113,113,.3)} .neu{color:var(--txt)}
 .tabs{display:flex;gap:6px;margin-bottom:10px}
-.tabs button{flex:1;background:transparent;color:var(--sub);border:1px solid var(--borda);border-radius:10px;padding:9px 0;font-size:12px;font-weight:600;min-height:40px}
-.tabs button.sel{background:var(--ouro);color:#111;border-color:var(--ouro)}
-.fonte{font-size:12px;font-weight:700;letter-spacing:.08em}
-.m{color:#ff6b5b} .c{color:var(--azul)}
-.mini{font-size:12px;color:var(--sub);margin-top:4px}
-.item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--borda)}
+.tabs button,.tabsx button,.zoom button{font-family:Orbitron,sans-serif;flex:1;background:rgba(10,14,32,.5);color:var(--sub);border:1px solid var(--borda);border-radius:12px;padding:9px 0;font-size:11px;font-weight:600;letter-spacing:.12em;min-height:40px;cursor:pointer}
+.tabs button.sel,.zoom button.sel{background:linear-gradient(90deg,rgba(255,179,71,.22),rgba(255,107,139,.18));color:#ffd38a;border-color:rgba(255,190,110,.6);box-shadow:0 0 16px rgba(255,160,70,.25)}
+.mini{font-size:11.5px;color:var(--sub);margin-top:4px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--borda)}
 .item:first-of-type{border-top:none}
-.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:6px}
-.tm{background:rgba(255,107,91,.16);color:#ff6b5b} .tp{background:rgba(196,181,253,.16);color:#c4b5fd} .p{color:#c4b5fd} .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px} .g3 .val{font-size:13.5px;white-space:nowrap;letter-spacing:-.02em} .g3 .card{padding:12px 10px} .tc{background:rgba(96,165,250,.15);color:var(--azul)} .tsa{background:rgba(240,194,123,.16);color:#f0c27b} .sa{color:#f0c27b} .g4{display:grid;grid-template-columns:1fr 1fr;gap:8px} .tne{background:rgba(34,211,238,.16);color:#22d3ee} .ne{color:#22d3ee} .g4 .full{grid-column:1/-1}
+.tag{font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:999px;margin-right:6px;letter-spacing:.08em;font-family:Orbitron,sans-serif;border:1px solid currentColor}
+.g4{display:grid;grid-template-columns:1fr 1fr;gap:9px}.g4 .full{grid-column:1/-1}
+.rob{overflow:hidden;padding:12px 12px 12px 12px}
+.rob .pl{position:absolute;right:-14px;top:-14px;width:58px;height:58px;border-radius:50%;opacity:.9}
+.rob .nm{display:flex;align-items:center;gap:7px;font-family:Orbitron,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em}
+.rob .ds{font-size:10px;color:var(--sub);letter-spacing:.06em;margin-top:2px;position:relative}
 .det{font-size:11.5px;color:var(--sub);margin-top:3px}
 .vazio{font-size:13px;color:var(--sub);padding:6px 0}
-h2{font-size:13px;color:var(--sub);letter-spacing:.12em;margin:18px 0 8px;font-weight:600}
-.an{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--borda);font-size:12.5px;line-height:1.5}
+h2{font-family:Orbitron,sans-serif;font-size:11px;color:var(--neon);letter-spacing:.22em;margin:20px 0 9px;font-weight:600;display:flex;align-items:center;gap:10px}
+h2:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(125,211,252,.4),transparent)}
+.an{margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(5,8,20,.55);border:1px solid var(--borda);font-size:12.5px;line-height:1.5}
 .an div{margin:2px 0}
-.selo{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:999px;margin-bottom:6px}
+.selo{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.12em;padding:3px 9px;border-radius:999px;margin-bottom:6px;font-family:Orbitron,sans-serif}
 .s-ok{background:rgba(74,222,128,.14);color:#86efac}.s-at{background:rgba(255,196,107,.16);color:var(--ouro)}.s-pe{background:rgba(248,113,113,.16);color:#fca5a5}
 .pbox{padding:10px 0;border-top:1px solid var(--borda)}.pbox:first-of-type{border-top:none}
 .nota{font-size:10.5px;color:var(--sub);margin-top:6px}
 .tabsx{display:flex;gap:6px;margin:0 0 14px}
-.tabsx button{flex:1;position:relative;background:transparent;color:var(--sub);border:1px solid var(--borda);border-radius:12px;padding:10px 0;font-size:13px;font-weight:700;letter-spacing:.06em;min-height:44px}
-.tabsx button.sel{background:rgba(255,196,107,.14);color:var(--ouro);border-color:rgba(255,196,107,.5)}
-.badge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;border-radius:999px;background:var(--verm);color:#fff;font-size:11px}
-.som{width:44px;height:44px;border-radius:12px;border:1px solid var(--borda);background:rgba(255,255,255,.04);color:var(--txt);display:flex;align-items:center;justify-content:center;padding:0}
-.som svg{width:22px;height:22px}
+.tabsx button{position:relative;font-size:12px;padding:10px 0;min-height:44px;border-radius:14px}
+.tabsx button.sel{background:linear-gradient(90deg,rgba(125,211,252,.16),rgba(167,139,250,.16));color:#e0f2fe;border-color:rgba(125,211,252,.55);box-shadow:0 0 18px rgba(125,211,252,.25)}
+.badge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;border-radius:999px;background:var(--verm);color:#fff;font-size:10px;box-shadow:0 0 10px rgba(248,113,113,.7)}
+.som{width:44px;height:44px;border-radius:14px;border:1px solid var(--borda);background:rgba(10,14,32,.6);color:var(--txt);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+.som svg{width:21px;height:21px}
 .som.mudo{color:var(--verm);border-color:rgba(248,113,113,.45)}
 .direita{display:flex;align-items:center;gap:8px}
-.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-150%);width:calc(100% - 32px);max-width:488px;padding:14px 16px;border-radius:14px;background:#1a2340;border:1px solid var(--ouro);box-shadow:0 10px 30px rgba(0,0,0,.5);font-weight:700;font-size:14px;z-index:9;transition:transform .35s}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-150%);width:calc(100% - 32px);max-width:508px;padding:14px 16px;border-radius:16px;background:rgba(16,22,52,.92);backdrop-filter:blur(10px);border:1px solid var(--ouro);box-shadow:0 0 30px rgba(255,170,70,.3),0 10px 30px rgba(0,0,0,.5);font-weight:700;font-size:14px;z-index:9;transition:transform .35s}
 .toast.vis{transform:translateX(-50%) translateY(0)}
 .toast small{display:block;font-weight:500;color:var(--sub);margin-top:3px}
-.gcard{background:rgba(255,255,255,.035);border:1px solid var(--borda);border-radius:14px;padding:12px;margin-bottom:12px}
-.gtit{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-.gtit b{font-size:15px}
-canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-action:pan-y}
-.zoom{display:flex;gap:6px;margin:0 0 8px}.zoom button{flex:1;background:transparent;color:var(--sub);border:1px solid var(--borda);border-radius:8px;padding:7px 0;font-size:12px;font-weight:700;min-height:36px}.zoom button.sel{color:#111;background:var(--ouro);border-color:var(--ouro)}
+.gtit{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.gtit b{font-size:14px;font-family:Orbitron,sans-serif;letter-spacing:.06em}
+canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-action:pan-y;border-radius:10px}
+.zoom{display:flex;gap:6px;margin:0 0 8px}.zoom button{min-height:36px;border-radius:10px}
 .leg{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--sub);margin-top:8px}
 .leg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
-.aviso{font-size:11px;color:var(--sub);text-align:center;margin-top:18px}
+.aviso{font-size:10.5px;color:var(--sub);text-align:center;margin-top:20px;letter-spacing:.04em}
+.aviso b{font-family:Orbitron,sans-serif;font-weight:600;color:#ffd38a;letter-spacing:.12em}
 </style>
 </head>
 <body>
+<canvas id="ceu" aria-hidden="true"></canvas>
 <div id="login">
+  <svg class="sol" style="width:120px;height:120px;margin:0 auto 18px;display:block" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gs2" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffb347"/><stop offset="1" stop-color="#ff6a2b"/></radialGradient><radialGradient id="gh2" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,170,60,.55)"/><stop offset="1" stop-color="rgba(255,120,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="22" fill="url(#gh2)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><circle cx="50" cy="50" r="12" fill="url(#gs2)"/><g class="orb o1"><circle cx="70" cy="50" r="2.6" fill="#ff6b5b"/></g><g class="orb o2"><circle cx="50" cy="21" r="3.2" fill="#fb923c"/></g><g class="orb o3"><circle cx="12" cy="50" r="5" fill="#a3e635"/></g><g class="orb o4"><circle cx="50" cy="97" r="3.8" fill="#22d3ee"/></g></svg>
   <h1>JORGE LEIRA TRADER</h1>
   <p class="sub" style="font-size:14px;margin-top:10px">Digite a chave do app (só na primeira vez).</p>
   <label for="chave" class="lbl">Chave</label>
@@ -88,7 +107,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 <div class="toast" id="toast"></div>
 <div class="wrap" id="app">
   <div class="top">
-    <div><h1>JORGE LEIRA TRADER</h1><div class="sub" id="conta">conta —</div></div>
+    <div class="marca"><svg class="sol" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gs" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffb347"/><stop offset="1" stop-color="#ff6a2b"/></radialGradient><radialGradient id="gh" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,170,60,.55)"/><stop offset="1" stop-color="rgba(255,120,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="22" fill="url(#gh)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><circle cx="50" cy="50" r="12" fill="url(#gs)"/><g class="orb o1"><circle cx="70" cy="50" r="2.6" fill="#ff6b5b"/></g><g class="orb o2"><circle cx="50" cy="21" r="3.2" fill="#fb923c"/></g><g class="orb o3"><circle cx="12" cy="50" r="5" fill="#a3e635"/></g><g class="orb o4"><circle cx="50" cy="97" r="3.8" fill="#22d3ee"/></g></svg><div style="min-width:0"><h1>JORGE LEIRA TRADER</h1><div class="sub" id="conta">conta —</div></div></div>
     <div class="direita">
       <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
       <button class="som" id="bsom" onclick="alternarSom()" aria-label="Ligar ou desligar o alerta sonoro"></button>
@@ -104,7 +123,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   </div>
   <div id="v_resumo">
 
-  <div class="card">
+  <div class="card hero">
     <div class="lbl">Resultado de hoje (fechado + aberto)</div>
     <div class="big neu" id="hojeTot">—</div>
     <div class="mini" id="hojeDet"></div>
@@ -121,14 +140,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
     <button id="b_semana" onclick="per('semana')">SEMANA</button>
     <button id="b_mes" onclick="per('mes')">MÊS</button>
   </div>
-  <div class="g4">
-    <div class="card"><div class="fonte m">MERCÚRIO</div><div class="val" id="pm">—</div><div class="mini" id="pmd"></div></div>
-    <div class="card"><div class="fonte p">PLUTÃO</div><div class="val" id="pp">—</div><div class="mini" id="ppd"></div></div>
-    <div class="card"><div class="fonte sa">SATURNO</div><div class="val" id="ps">—</div><div class="mini" id="psd"></div></div>
-    <div class="card"><div class="fonte ne">NETUNO</div><div class="val" id="pn">—</div><div class="mini" id="pnd"></div></div>
-    <div class="card full"><div class="fonte c">COPY</div><div class="val" id="pc">—</div><div class="mini" id="pcd"></div></div>
-  </div>
-
+  <div class="g4" id="robos"></div>
   <h2>POSIÇÕES ABERTAS</h2>
   <div class="card" id="abertas"><div class="vazio">—</div></div>
 
@@ -136,7 +148,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
   </div>
-  <div class="aviso">Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
+  <div class="aviso"><b>SISTEMA SOLAR</b> · 6 robôs em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
 </div>
 <script>
 var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
@@ -313,10 +325,30 @@ function regiao(x){
   }
   return R;
 }
-function NOMEF(f){ return f === 'MERCURIO' ? 'MERCÚRIO' : (f === 'PLUTAO' ? 'PLUTÃO' : (f === 'SATURNO' ? 'SATURNO' : (f === 'NETUNO' ? 'NETUNO' : 'COPY'))); }
-function TAGF(f){ return f === 'MERCURIO' ? 'tm' : (f === 'PLUTAO' ? 'tp' : (f === 'SATURNO' ? 'tsa' : (f === 'NETUNO' ? 'tne' : 'tc'))); }
+var ROBOS = [
+  {k:'MERCURIO', n:'MERCÚRIO', c:'#ff6b5b', d:'Ouro'},
+  {k:'MARTE',    n:'MARTE',    c:'#fb923c', d:'GER40 · M15'},
+  {k:'JUPITER',  n:'JÚPITER',  c:'#a3e635', d:'Nasdaq · M15'},
+  {k:'SATURNO',  n:'SATURNO',  c:'#f0c27b', d:'Ouro', anel:true},
+  {k:'NETUNO',   n:'NETUNO',   c:'#22d3ee', d:'GER40 · M5'},
+  {k:'PLUTAO',   n:'PLUTÃO',   c:'#c4b5fd', d:''},
+  {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
+];
+function ROB(f){ for (var i = 0; i < ROBOS.length; i++) if (ROBOS[i].k === f) return ROBOS[i]; return ROBOS[ROBOS.length - 1]; }
+function NOMEF(f){ return ROB(f).n; }
+function tagHtml(f){ var r = ROB(f); return '<span class="tag" style="color:' + r.c + ';background:' + r.c + '1f">' + r.n + '</span>'; }
+function montarRobos(){
+  var g = document.getElementById('robos'); g.innerHTML = '';
+  ROBOS.forEach(function(r){
+    var c = document.createElement('div'); c.className = 'card rob' + (r.full ? ' full' : ''); c.style.borderColor = r.c + '40';
+    var pl = r.k === 'COPY' ? 'radial-gradient(circle at 35% 35%,#dbeafe,' + r.c + ' 45%,#0b1530 75%)' : 'radial-gradient(circle at 32% 30%,#fff,' + r.c + ' 38%,' + r.c + '55 62%,transparent 72%)';
+    c.innerHTML = '<div class="pl" style="background:' + pl + ';box-shadow:0 0 26px ' + r.c + '55"></div>' + (r.anel ? '<div style="position:absolute;right:-26px;top:9px;width:82px;height:18px;border-radius:50%;border:2px solid ' + r.c + '99;transform:rotate(-18deg)"></div>' : '') +
+      '<div class="nm" style="color:' + r.c + ';text-shadow:0 0 12px ' + r.c + '66">' + r.n + '</div><div class="ds">' + (r.d || '&nbsp;') + '</div><div class="val" id="v_' + r.k + '">—</div><div class="mini" id="d_' + r.k + '"></div>';
+    g.appendChild(c);
+  });
+}
 function analise(x){
-  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', frac = null;
+  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', frac = null;
   var sem_stop = (!copy && x.risco === null);
   if (x.favor === 1) L.push('✅ A favor da tendência (média longa do gráfico)');
   else if (x.favor === -1) L.push('⚠️ Contra a tendência (média longa do gráfico)');
@@ -331,11 +363,15 @@ function analise(x){
     if (x.prog !== null && x.prog >= 0) L.push('📈 Já fez ' + Math.min(x.prog, 100) + '% do caminho até o alvo');
     if (!sem_stop && !x.protegido && x.lucro < 0 && x.risco < 0) { frac = Math.round(100 * x.lucro / x.risco); L.push('📉 Já andou ' + frac + '% do caminho até o stop'); }
   }
-  if (net) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo da cesta (1,5R), na cor contrária do IFR ou no stop · zera no fim do dia');
+  if (jup) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (4x o stop), no stop, no sinal contrário, depois de 6 h ou na virada do dia');
+  else if (mar) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (3x o stop), no stop, no sinal contrário ou na virada do dia');
+  else if (net) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo da cesta (1,5R), na cor contrária do IFR ou no stop · zera no fim do dia');
   else if (plu || sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
-  if (net) L.push('📊 NETUNO nos testes (GER40, 2 anos, ticks reais): acerta ~6 em 10, gain médio ~US$ 54 e loss médio ~US$ 55 no lote 1. PF 1,55. Pode abrir 1 preço médio (2º lote)');
+  if (jup) L.push('📊 JÚPITER nos testes (Nasdaq, 2 anos, ticks reais): lucro ~US$ 2.992 no lote 1, PF 3,74. Só opera com Nova York aberta; o lote é ajustado pelas sondas (HELIOS, gigantes, VIX e cerca do dia anterior)');
+  else if (mar) L.push('📊 MARTE nos testes (GER40, 2 anos, ticks reais): lucro ~US$ 3.074 no lote 1, PF 2,37. Pullback a favor da tendência; lote ajustado pelas sondas HELIOS e REFÚGIO');
+  else if (net) L.push('📊 NETUNO nos testes (GER40, 2 anos, ticks reais): acerta ~6 em 10, gain médio ~US$ 54 e loss médio ~US$ 55 no lote 1. PF 1,55. Pode abrir 1 preço médio (2º lote)');
   else if (sat) L.push('📊 SATURNO nos testes (2 anos, ticks reais): acerta ~3 em 10, mas o gain médio (~US$ 199 no 0,03) paga ~4 losses (~US$ 52). PF 1,56 a 1,84. Operação dura ~5 h');
   else if (plu) L.push('📊 PLUTÃO nos testes (2 anos + 7 meses fora): acerta ~3 em 10, mas cada gain paga ~3,5 stops (PF 1,5 a 1,6). Stop é normal, o resultado vem dos gains');
   else if (!copy) L.push('📊 No teste de 12 meses, 87% das operações do MERCÚRIO fecharam no lucro (PF 2,39)');
@@ -360,26 +396,20 @@ function desenhar(){
   else { pill.className = 'pill off'; set('st', 'SEM SINAL ' + Math.round(idade / 60) + ' MIN'); }
   set('conta', 'conta ' + D.conta + (D.desde ? ' · contando desde ' + dia(D.desde) : '') + ' · atualizado ' + D.hora.substr(11, 8));
   var Z = {lucro: 0, ops: 0, ganhos: 0};
-  var h = D.periodos.hoje, fl = D.flutuante.MERCURIO + D.flutuante.COPY + (D.flutuante.PLUTAO || 0) + (D.flutuante.SATURNO || 0) + (D.flutuante.NETUNO || 0);
-  var hP = h.PLUTAO || Z, hS = h.SATURNO || Z, hN = h.NETUNO || Z;
-  var tot = h.MERCURIO.lucro + h.COPY.lucro + hP.lucro + hS.lucro + hN.lucro + fl;
+  var h = D.periodos.hoje, fl = 0, fech = 0;
+  ROBOS.forEach(function(r){ fl += (D.flutuante[r.k] || 0); fech += (h[r.k] || Z).lucro; });
+  var tot = fech + fl;
   set('hojeTot', usd(tot, true), cls(tot));
-  set('hojeDet', 'Fechado ' + usd(h.MERCURIO.lucro + h.COPY.lucro + hP.lucro + hS.lucro + hN.lucro, true) + ' · aberto ' + usd(fl, true));
+  set('hojeDet', 'Fechado ' + usd(fech, true) + ' · aberto ' + usd(fl, true));
   set('saldo', usd(D.saldo)); set('patr', usd(D.patrimonio));
   var p = D.periodos[P];
-  set('pm', usd(p.MERCURIO.lucro, true), cls(p.MERCURIO.lucro));
-  set('pc', usd(p.COPY.lucro, true), cls(p.COPY.lucro));
-  var pN = p.NETUNO || Z; set('pn', usd(pN.lucro, true), cls(pN.lucro)); set('pnd', pN.ops + ' ops · ' + (pN.ops ? Math.round(100 * pN.ganhos / pN.ops) : 0) + '% ganhos');
-  var pS = p.SATURNO || Z; set('ps', usd(pS.lucro, true), cls(pS.lucro)); set('psd', pS.ops + ' ops · ' + (pS.ops ? Math.round(100 * pS.ganhos / pS.ops) : 0) + '% ganhos');
-  var pP = p.PLUTAO || Z; set('pp', usd(pP.lucro, true), cls(pP.lucro)); set('ppd', pP.ops + ' ops · ' + (pP.ops ? Math.round(100 * pP.ganhos / pP.ops) : 0) + '% ganhos');
-  set('pmd', p.MERCURIO.ops + ' ops · ' + (p.MERCURIO.ops ? Math.round(100 * p.MERCURIO.ganhos / p.MERCURIO.ops) : 0) + '% ganhos');
-  set('pcd', p.COPY.ops + ' ops · ' + (p.COPY.ops ? Math.round(100 * p.COPY.ganhos / p.COPY.ops) : 0) + '% ganhos');
+  ROBOS.forEach(function(r){ var q = p[r.k] || Z; set('v_' + r.k, usd(q.lucro, true), cls(q.lucro)); set('d_' + r.k, q.ops + ' ops · ' + (q.ops ? Math.round(100 * q.ganhos / q.ops) : 0) + '% ganhos'); });
   var a = document.getElementById('abertas'); a.innerHTML = '';
   if (!D.posicoes.length) a.innerHTML = '<div class="vazio">Nenhuma posição aberta</div>';
   D.posicoes.forEach(function(x){
     var w = document.createElement('div'); w.className = 'pbox';
     var r = document.createElement('div'); r.className = 'item'; r.style.borderTop = 'none'; r.style.padding = '0';
-    r.innerHTML = '<div><div><span class="tag ' + TAGF(x.fonte) + '">' + NOMEF(x.fonte) + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
+    r.innerHTML = '<div><div>' + tagHtml(x.fonte) + '<b></b></div><div class="det"></div></div><div class="val"></div>';
     r.querySelector('b').textContent = x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',');
     r.querySelector('.det').textContent = 'entrada ' + x.entrada + ' · agora ' + x.atual + ' · desde ' + hora(x.aberta);
     var v = r.querySelector('.val'); v.textContent = usd(x.lucro, true); v.className = 'val ' + cls(x.lucro);
@@ -390,7 +420,7 @@ function desenhar(){
   if (!D.ultimas.length) u.innerHTML = '<div class="vazio">Nenhuma operação nos últimos 7 dias</div>';
   D.ultimas.forEach(function(x){
     var r = document.createElement('div'); r.className = 'item';
-    r.innerHTML = '<div><div><span class="tag ' + TAGF(x.fonte) + '">' + NOMEF(x.fonte) + '</span><b></b></div><div class="det"></div></div><div class="val"></div>';
+    r.innerHTML = '<div><div>' + tagHtml(x.fonte) + '<b></b></div><div class="det"></div></div><div class="val"></div>';
     r.querySelector('b').textContent = x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',');
     r.querySelector('.det').textContent = dia(x.hora) + ' ' + hora(x.hora);
     var v = r.querySelector('.val'); v.textContent = usd(x.lucro, true); v.className = 'val ' + cls(x.lucro);
@@ -404,7 +434,17 @@ function buscar(){
     if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); } catch(e) {} }
   }).catch(function(){});
 }
-botaoSom(); mostrar(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
+(function(){
+  var cv = document.getElementById('ceu'), g = cv.getContext('2d'), E = [], W, H, mov = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function tam(){ var dpr = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); E = []; var n = Math.round(W * H / 2600); for (var i = 0; i < n; i++) E.push({x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.3 + .2, a: Math.random() * 6.28, v: .004 + Math.random() * .02, c: Math.random() < .12 ? '255,210,150' : (Math.random() < .2 ? '160,200,255' : '255,255,255')}); }
+  var cad = null;
+  function pinta(){ g.clearRect(0, 0, W, H); E.forEach(function(e){ e.a += e.v; var o = .35 + .55 * Math.abs(Math.sin(e.a)); g.fillStyle = 'rgba(' + e.c + ',' + o.toFixed(2) + ')'; g.beginPath(); g.arc(e.x, e.y, e.r, 0, 6.28); g.fill(); });
+    if (mov && !cad && Math.random() < .004) cad = {x: Math.random() * W, y: Math.random() * H * .4, t: 0};
+    if (cad) { cad.t += 1; var x = cad.x + cad.t * 7, y = cad.y + cad.t * 3, gr = g.createLinearGradient(x - 70, y - 30, x, y); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(255,240,210,.85)'); g.strokeStyle = gr; g.lineWidth = 1.4; g.beginPath(); g.moveTo(x - 70, y - 30); g.lineTo(x, y); g.stroke(); if (cad.t > 40) cad = null; }
+    if (mov) requestAnimationFrame(pinta); }
+  addEventListener('resize', function(){ tam(); if (!mov) pinta(); }); tam(); pinta();
+})();
+montarRobos(); botaoSom(); mostrar(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
