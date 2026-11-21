@@ -327,11 +327,11 @@ function regiao(x){
 }
 var ROBOS = [
   {k:'MERCURIO', n:'MERCÚRIO', c:'#ff6b5b', d:'Ouro'},
-  {k:'MARTE',    n:'MARTE',    c:'#fb923c', d:'GER40 · M15'},
-  {k:'JUPITER',  n:'JÚPITER',  c:'#a3e635', d:'Nasdaq · M15'},
+  {k:'MARTE',    n:'MARTE',    c:'#fb923c', d:'GER40'},
+  {k:'JUPITER',  n:'JÚPITER',  c:'#a3e635', d:'Nasdaq'},
   {k:'SATURNO',  n:'SATURNO',  c:'#f0c27b', d:'Ouro', anel:true},
-  {k:'NETUNO',   n:'NETUNO',   c:'#22d3ee', d:'GER40 · M5'},
-  {k:'PLUTAO',   n:'PLUTÃO',   c:'#c4b5fd', d:''},
+  {k:'NETUNO',   n:'NETUNO',   c:'#22d3ee', d:'GER40'},
+  {k:'PLUTAO',   n:'PLUTÃO',   c:'#c4b5fd', d:'Ouro'},
   {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
 ];
 function ROB(f){ for (var i = 0; i < ROBOS.length; i++) if (ROBOS[i].k === f) return ROBOS[i]; return ROBOS[ROBOS.length - 1]; }
@@ -369,8 +369,8 @@ function analise(x){
   else if (plu || sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
-  if (jup) L.push('📊 JÚPITER nos testes (Nasdaq, 2 anos, ticks reais): lucro ~US$ 2.992 no lote 1, PF 3,74. Só opera com Nova York aberta; o lote é ajustado pelas sondas (HELIOS, gigantes, VIX e cerca do dia anterior)');
-  else if (mar) L.push('📊 MARTE nos testes (GER40, 2 anos, ticks reais): lucro ~US$ 3.074 no lote 1, PF 2,37. Pullback a favor da tendência; lote ajustado pelas sondas HELIOS e REFÚGIO');
+  if (jup) L.push('📊 JÚPITER nos testes (Nasdaq, 2 anos, ticks reais): lucro ~US$ 2.992 no lote 1, PF 3,74. Só opera com Nova York aberta');
+  else if (mar) L.push('📊 MARTE nos testes (GER40, 2 anos, ticks reais): lucro ~US$ 3.074 no lote 1, PF 2,37. Pullback a favor da tendência');
   else if (net) L.push('📊 NETUNO nos testes (GER40, 2 anos, ticks reais): acerta ~6 em 10, gain médio ~US$ 54 e loss médio ~US$ 55 no lote 1. PF 1,55. Pode abrir 1 preço médio (2º lote)');
   else if (sat) L.push('📊 SATURNO nos testes (2 anos, ticks reais): acerta ~3 em 10, mas o gain médio (~US$ 199 no 0,03) paga ~4 losses (~US$ 52). PF 1,56 a 1,84. Operação dura ~5 h');
   else if (plu) L.push('📊 PLUTÃO nos testes (2 anos + 7 meses fora): acerta ~3 em 10, mas cada gain paga ~3,5 stops (PF 1,5 a 1,6). Stop é normal, o resultado vem dos gains');
