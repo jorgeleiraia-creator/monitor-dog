@@ -60,6 +60,12 @@ h1{margin:0;font-family:Orbitron,sans-serif;font-weight:800;font-size:clamp(11px
 .g4{display:grid;grid-template-columns:1fr 1fr;gap:9px}.g4 .full{grid-column:1/-1}
 .rob{overflow:hidden;padding:12px 12px 12px 12px}
 .rob .pl{position:absolute;right:-8px;top:-8px;height:64px;filter:drop-shadow(0 0 10px rgba(255,255,255,.12))}
+.rob img.pl{position:absolute;right:-4px;top:-4px;height:62px;width:auto;filter:drop-shadow(0 0 12px var(--g)) drop-shadow(0 0 2px rgba(0,0,0,.6));animation:flutua 6s ease-in-out infinite;opacity:.97}
+.rob img.pl.anel{right:-14px;top:0;height:54px}
+.rob:nth-child(2n) img.pl{animation-delay:-3s}
+.rob:hover img.pl{transform:scale(1.06)}
+@keyframes flutua{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(2deg)}}
+@media (prefers-reduced-motion:reduce){.rob img.pl{animation:none}}
 .rob .nm{display:flex;align-items:center;gap:7px;font-family:Orbitron,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em}
 .rob .ds{font-size:10px;color:var(--sub);letter-spacing:.06em;margin-top:2px;position:relative}
 .det{font-size:11.5px;color:var(--sub);margin-top:3px}
@@ -96,7 +102,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 <body>
 <canvas id="ceu" aria-hidden="true"></canvas>
 <div id="login">
-  <svg class="sol" style="width:120px;height:120px;margin:0 auto 18px;display:block" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gs2" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffb347"/><stop offset="1" stop-color="#ff6a2b"/></radialGradient><radialGradient id="gh2" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,170,60,.55)"/><stop offset="1" stop-color="rgba(255,120,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="22" fill="url(#gh2)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><circle cx="50" cy="50" r="12" fill="url(#gs2)"/><g class="orb o1"><circle cx="70" cy="50" r="2.6" fill="#ff6b5b"/></g><g class="orb o2"><circle cx="50" cy="21" r="3.2" fill="#fb923c"/></g><g class="orb o3"><circle cx="12" cy="50" r="5" fill="#a3e635"/></g><g class="orb o4"><circle cx="50" cy="97" r="3.8" fill="#22d3ee"/></g></svg>
+  <svg class="sol" style="width:120px;height:120px;margin:0 auto 18px;display:block" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gh2" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,150,60,.6)"/><stop offset="1" stop-color="rgba(255,110,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="26" fill="url(#gh2)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><image href="planetas/sol.png" x="36" y="36" width="28" height="28"/><g class="orb o1"><image href="planetas/mercurio.png" x="66.5" y="46.5" width="7" height="7"/></g><g class="orb o2"><image href="planetas/venus.png" x="45.5" y="16.5" width="9" height="9"/></g><g class="orb o3"><image href="planetas/terra.png" x="6" y="44" width="12" height="12"/></g><g class="orb o4"><image href="planetas/marte.png" x="45" y="92" width="10" height="10"/></g></svg>
   <h1>JORGE LEIRA TRADER</h1>
   <p class="sub" style="font-size:14px;margin-top:10px">Digite a chave do app (só na primeira vez).</p>
   <label for="chave" class="lbl">Chave</label>
@@ -107,7 +113,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 <div class="toast" id="toast"></div>
 <div class="wrap" id="app">
   <div class="top">
-    <div class="marca"><svg class="sol" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gs" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffb347"/><stop offset="1" stop-color="#ff6a2b"/></radialGradient><radialGradient id="gh" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,170,60,.55)"/><stop offset="1" stop-color="rgba(255,120,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="22" fill="url(#gh)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><circle cx="50" cy="50" r="12" fill="url(#gs)"/><g class="orb o1"><circle cx="70" cy="50" r="2.6" fill="#ff6b5b"/></g><g class="orb o2"><circle cx="50" cy="21" r="3.2" fill="#fb923c"/></g><g class="orb o3"><circle cx="12" cy="50" r="5" fill="#a3e635"/></g><g class="orb o4"><circle cx="50" cy="97" r="3.8" fill="#22d3ee"/></g></svg><div style="min-width:0"><h1>JORGE LEIRA TRADER</h1><div class="sub" id="conta">conta —</div></div></div>
+    <div class="marca"><svg class="sol" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gh" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,150,60,.6)"/><stop offset="1" stop-color="rgba(255,110,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="26" fill="url(#gh)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><image href="planetas/sol.png" x="36" y="36" width="28" height="28"/><g class="orb o1"><image href="planetas/mercurio.png" x="66.5" y="46.5" width="7" height="7"/></g><g class="orb o2"><image href="planetas/venus.png" x="45.5" y="16.5" width="9" height="9"/></g><g class="orb o3"><image href="planetas/terra.png" x="6" y="44" width="12" height="12"/></g><g class="orb o4"><image href="planetas/marte.png" x="45" y="92" width="10" height="10"/></g></svg><div style="min-width:0"><h1>JORGE LEIRA TRADER</h1><div class="sub" id="conta">conta —</div></div></div>
     <div class="direita">
       <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
       <button class="som" id="bsom" onclick="alternarSom()" aria-label="Ligar ou desligar o alerta sonoro"></button>
@@ -148,7 +154,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
   </div>
-  <div class="aviso"><b>SISTEMA SOLAR</b> · 6 robôs em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
+  <div class="aviso"><b>SISTEMA SOLAR</b> · 8 robôs em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
 </div>
 <script>
 var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
@@ -326,7 +332,9 @@ function regiao(x){
   return R;
 }
 var ROBOS = [
-  {k:'MERCURIO', n:'MERCÚRIO', c:'#a8a29e', d:'Ouro'},
+  {k:'MERCURIO', n:'MERCÚRIO', c:'#c9c4bc', d:'Ouro'},
+  {k:'VENUS',    n:'VÊNUS',    c:'#f2b45a', d:'S&P 500'},
+  {k:'TERRA',    n:'TERRA',    c:'#4fc3f7', d:'Nasdaq'},
   {k:'MARTE',    n:'MARTE',    c:'#e8743f', d:'GER40'},
   {k:'JUPITER',  n:'JÚPITER',  c:'#d9a66b', d:'Nasdaq'},
   {k:'SATURNO',  n:'SATURNO',  c:'#e6cf98', d:'Ouro'},
@@ -334,7 +342,9 @@ var ROBOS = [
   {k:'PLUTAO',   n:'PLUTÃO',   c:'#d8bc98', d:'Ouro'},
   {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
 ];
+var FOTO = {MERCURIO:'mercurio',VENUS:'venus',TERRA:'terra',MARTE:'marte',JUPITER:'jupiter',SATURNO:'saturno',NETUNO:'netuno',PLUTAO:'plutao'};
 function planetaSVG(k){
+  if (FOTO[k]) { var r = ROB(k); return '<img class="pl foto' + (k === 'SATURNO' ? ' anel' : '') + '" src="planetas/' + FOTO[k] + '.png" alt="" style="--g:' + r.c + '">'; }
   var id='g'+k, sh='<radialGradient id="'+id+'s" cx="30%" cy="28%" r="80%"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>';
   var clip='<clipPath id="'+id+'c"><circle cx="32" cy="32" r="28"/></clipPath>', sombra='<circle cx="32" cy="32" r="28" fill="url(#'+id+'s)"/>';
   var corpo='', defs='', w=64, vb='0 0 64 64', antes='', depois='';
@@ -381,7 +391,7 @@ function montarRobos(){
   });
 }
 function analise(x){
-  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', frac = null;
+  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', ter = x.fonte === 'TERRA', ven = x.fonte === 'VENUS', frac = null;
   var sem_stop = (!copy && x.risco === null);
   if (x.favor === 1) L.push('✅ A favor da tendência (média longa do gráfico)');
   else if (x.favor === -1) L.push('⚠️ Contra a tendência (média longa do gráfico)');
@@ -396,13 +406,16 @@ function analise(x){
     if (x.prog !== null && x.prog >= 0) L.push('📈 Já fez ' + Math.min(x.prog, 100) + '% do caminho até o alvo');
     if (!sem_stop && !x.protegido && x.lucro < 0 && x.risco < 0) { frac = Math.round(100 * x.lucro / x.risco); L.push('📉 Já andou ' + frac + '% do caminho até o stop'); }
   }
-  if (jup) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (4x o stop), no stop, no sinal contrário, depois de 6 h ou na virada do dia');
+  if (ter || ven) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%), aos 60 min ou às 18:00 (fecha Nova York) · faltam ' + Math.max(0, 60 - x.min) + ' min');
+  else if (jup) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (4x o stop), no stop, no sinal contrário, depois de 6 h ou na virada do dia');
   else if (mar) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (3x o stop), no stop, no sinal contrário ou na virada do dia');
   else if (net) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo da cesta (1,5R), na cor contrária do IFR ou no stop · zera no fim do dia');
   else if (plu || sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
-  if (jup) L.push('📊 JÚPITER nos testes (Nasdaq, 2 anos, ticks reais): lucro ~US$ 2.992 no lote 1, PF 3,74. Só opera com Nova York aberta');
+  if (ter) L.push('📊 TERRA nos testes (Nasdaq, fluxo de opções GrixCore + gama ZeroGEX): gain médio ~US$ 61, loss médio ~US$ 19 com lote 0,60. PF ~3. Amostra ainda curta');
+  else if (ven) L.push('📊 VÊNUS nos testes (S&P 500, fluxo de opções GrixCore + gama ZeroGEX): gain médio ~US$ 45, loss médio ~US$ 15 com lote 3. Acerta ~6 em 10. Amostra ainda curta');
+  else if (jup) L.push('📊 JÚPITER nos testes (Nasdaq, 2 anos, ticks reais): lucro ~US$ 2.992 no lote 1, PF 3,74. Só opera com Nova York aberta');
   else if (mar) L.push('📊 MARTE nos testes (GER40, 2 anos, ticks reais): lucro ~US$ 3.074 no lote 1, PF 2,37. Pullback a favor da tendência');
   else if (net) L.push('📊 NETUNO nos testes (GER40, 2 anos, ticks reais): acerta ~6 em 10, gain médio ~US$ 54 e loss médio ~US$ 55 no lote 1. PF 1,55. Pode abrir 1 preço médio (2º lote)');
   else if (sat) L.push('📊 SATURNO nos testes (2 anos, ticks reais): acerta ~3 em 10, mas o gain médio (~US$ 199 no 0,03) paga ~4 losses (~US$ 52). PF 1,56 a 1,84. Operação dura ~5 h');
