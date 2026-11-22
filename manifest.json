@@ -1,7 +1,8 @@
 {
+  "id": "/monitor-dog/?app=orbita",
   "name": "Órbita",
   "short_name": "Órbita",
-  "start_url": "./",
+  "start_url": "./?app=orbita",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
