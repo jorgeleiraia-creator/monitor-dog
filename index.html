@@ -383,15 +383,16 @@ var ROBOS = [
   {k:'MERCURIO', n:'MERCÚRIO', c:'#c9c4bc', d:'Ouro'},
   {k:'VENUS',    n:'VÊNUS',    c:'#f2b45a', d:'S&P 500'},
   {k:'TERRA',    n:'TERRA',    c:'#4fc3f7', d:'Nasdaq'},
+  {k:'LUA',      n:'LUA',      c:'#dfe3ea', d:'Nasdaq'},
   {k:'MARTE',    n:'MARTE',    c:'#e8743f', d:'GER40'},
   {k:'JUPITER',  n:'JÚPITER',  c:'#d9a66b', d:'Nasdaq'},
   {k:'SATURNO',  n:'SATURNO',  c:'#e6cf98', d:'Ouro'},
   {k:'URANO',    n:'URANO',    c:'#7fe0e6', d:'Nasdaq'},
   {k:'NETUNO',   n:'NETUNO',   c:'#5b8cff', d:'GER40'},
   {k:'PLUTAO',   n:'PLUTÃO',   c:'#d8bc98', d:'Ouro'},
-  {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade'}
+  {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
 ];
-var FOTO = {MERCURIO:'mercurio',VENUS:'venus',TERRA:'terra',MARTE:'marte',JUPITER:'jupiter',SATURNO:'saturno',URANO:'urano',NETUNO:'netuno',PLUTAO:'plutao'};
+var FOTO = {MERCURIO:'mercurio',VENUS:'venus',TERRA:'terra',MARTE:'marte',JUPITER:'jupiter',SATURNO:'saturno',URANO:'urano',NETUNO:'netuno',PLUTAO:'plutao',LUA:'lua'};
 function planetaSVG(k){
   if (FOTO[k]) { var r = ROB(k); return '<img class="pl foto' + (k === 'SATURNO' ? ' anel' : '') + '" src="planetas/' + FOTO[k] + '.png" alt="" style="--g:' + r.c + '">'; }
   var id='g'+k, sh='<radialGradient id="'+id+'s" cx="30%" cy="28%" r="80%"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>';
@@ -440,7 +441,7 @@ function montarRobos(){
   });
 }
 function analise(x){
-  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', ter = x.fonte === 'TERRA', ven = x.fonte === 'VENUS', ura = x.fonte === 'URANO', frac = null;
+  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', ter = x.fonte === 'TERRA', ven = x.fonte === 'VENUS', ura = x.fonte === 'URANO', lua = x.fonte === 'LUA', frac = null;
   var sem_stop = (!copy && x.risco === null);
   if (x.favor === 1) L.push('✅ A favor da tendência (média longa do gráfico)');
   else if (x.favor === -1) L.push('⚠️ Contra a tendência (média longa do gráfico)');
@@ -455,14 +456,16 @@ function analise(x){
     if (x.prog !== null && x.prog >= 0) L.push('📈 Já fez ' + Math.min(x.prog, 100) + '% do caminho até o alvo');
     if (!sem_stop && !x.protegido && x.lucro < 0 && x.risco < 0) { frac = Math.round(100 * x.lucro / x.risco); L.push('📉 Já andou ' + frac + '% do caminho até o stop'); }
   }
-  if (ter || ven || ura) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%), aos 60 min ou às 18:00 (fecha Nova York) · faltam ' + Math.max(0, 60 - x.min) + ' min');
+  if (lua) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop, no alvo (4x o stop, só na venda Vanna), aos 15 min (Vanna) ou 30 min (impulso) · máximo 30 min · faltam ' + Math.max(0, 30 - x.min) + ' min');
+  else if (ter || ven || ura) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%), aos 60 min ou às 18:00 (fecha Nova York) · faltam ' + Math.max(0, 60 - x.min) + ' min');
   else if (jup) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (4x o stop), no stop, no sinal contrário, depois de 6 h ou na virada do dia');
   else if (mar) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (3x o stop), no stop, no sinal contrário ou na virada do dia');
   else if (net) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo da cesta (1,5R), na cor contrária do IFR ou no stop · zera no fim do dia');
   else if (plu || sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
-  if (ter) L.push('📊 TERRA nos testes (Nasdaq, fluxo de opções GrixCore + gama ZeroGEX): gain médio ~US$ 61, loss médio ~US$ 19 com lote 0,60. PF ~3. Amostra ainda curta');
+  if (lua) L.push('📊 LUA nos testes (Nasdaq, ticks reais, gama e paredes ZeroGEX + VIX): gain médio ~US$ 127, loss médio ~US$ 40 com lote 1,0. PF ~2,4. Amostra ainda curta (4 meses)');
+  else if (ter) L.push('📊 TERRA nos testes (Nasdaq, fluxo de opções GrixCore + gama ZeroGEX): gain médio ~US$ 61, loss médio ~US$ 19 com lote 0,60. PF ~3. Amostra ainda curta');
   else if (ura) L.push('📊 URANO nos testes (Nasdaq, IFR Turbo no 1 minuto + sondas GrixCore e ZeroGEX): gain médio ~US$ 72, loss médio ~US$ 19 com lote 0,80. Acerta ~6 em 10. Amostra ainda curta');
   else if (ven) L.push('📊 VÊNUS nos testes (S&P 500, fluxo de opções GrixCore + gama ZeroGEX): gain médio ~US$ 45, loss médio ~US$ 15 com lote 3. Acerta ~6 em 10. Amostra ainda curta');
   else if (jup) L.push('📊 JÚPITER nos testes (Nasdaq, 2 anos, ticks reais): lucro ~US$ 2.992 no lote 1, PF 3,74. Só opera com Nova York aberta');
