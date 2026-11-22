@@ -99,6 +99,30 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 .leg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .aviso{font-size:10.5px;color:var(--sub);text-align:center;margin-top:20px;letter-spacing:.04em}
 .aviso b{font-family:Orbitron,sans-serif;font-weight:600;color:#ffd38a;letter-spacing:.12em}
+.placar{overflow:hidden;border-color:rgba(125,211,252,.28);padding:16px}
+.placar:before{content:"";position:absolute;left:-80px;bottom:-90px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(125,211,252,.18),transparent 70%)}
+.placar .topo{position:relative}
+.placar .big{font-size:clamp(26px,8.6vw,36px);margin-top:4px;white-space:nowrap}
+.placar .linha2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;font-family:Orbitron,sans-serif;letter-spacing:.06em;white-space:nowrap}
+.chip.pos{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35)}.chip.neg{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35)}.chip.neu{background:rgba(143,160,200,.12);border:1px solid rgba(143,160,200,.3)}
+.g3{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;position:relative}
+.tile{padding:10px 12px;border-radius:14px;background:rgba(5,8,20,.5);border:1px solid var(--borda)}
+.tile .val{font-size:18px;font-family:Orbitron,sans-serif;font-weight:700}
+.spark{margin-top:14px;position:relative}
+.spark .cab{display:flex;justify-content:space-between;align-items:baseline}
+.spark svg{width:100%;height:92px;display:block;margin-top:6px;overflow:visible}
+.contrib .linha{display:grid;grid-template-columns:78px 1fr 92px;align-items:center;gap:8px;padding:5px 0;font-size:12px}
+.contrib .nmr{font-family:Orbitron,sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contrib .trilho{position:relative;height:12px;border-radius:6px;background:rgba(255,255,255,.04)}
+.contrib .trilho:after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:rgba(255,255,255,.18)}
+.contrib .barra{position:absolute;top:0;bottom:0;border-radius:6px;box-shadow:0 0 10px currentColor}
+.contrib .vr{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:12px}
+.contrib .tot{display:flex;justify-content:space-between;align-items:center;padding:10px 0 4px;margin-top:6px;border-top:1px solid var(--borda)}
+.contrib .tot b{font-family:Orbitron,sans-serif;font-size:17px;white-space:nowrap}
+.contrib .tot .lbl{letter-spacing:.12em}
+.rob .share{height:3px;border-radius:2px;margin-top:8px;position:relative;background:rgba(255,255,255,.06);overflow:hidden}
+.rob .share i{display:block;height:100%;border-radius:2px}
 </style>
 </head>
 <body>
@@ -142,12 +166,27 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
     <div class="card"><div class="lbl">Patrimônio</div><div class="val" id="patr">—</div></div>
   </div>
 
+
+  <h2>PLACAR DO SISTEMA</h2>
+  <div class="card placar">
+    <div class="topo">
+      <div class="lbl">Total do mês · todos os robôs</div><div class="big neu" id="pMes">—</div>
+    </div>
+    <div class="linha2"><span class="chip neu" id="pMesPct">—</span><span class="mini" id="pMesD" style="margin:0"></span></div>
+    <div class="g3">
+      <div class="tile"><div class="lbl">Hoje (fechado)</div><div class="val neu" id="pHoje">—</div><div class="mini" id="pHojeD"></div></div>
+      <div class="tile"><div class="lbl">Semana</div><div class="val neu" id="pSem">—</div><div class="mini" id="pSemD"></div></div>
+    </div>
+    <div class="spark"><div class="cab"><div class="lbl">Últimos 7 dias</div><div class="mini" id="sparkTot"></div></div><svg id="spark" role="img" aria-label="Resultado por dia nos últimos 7 dias"></svg></div>
+  </div>
+
   <h2>RESULTADOS FECHADOS</h2>
   <div class="tabs">
     <button id="b_hoje" class="sel" onclick="per('hoje')">HOJE</button>
     <button id="b_semana" onclick="per('semana')">SEMANA</button>
     <button id="b_mes" onclick="per('mes')">MÊS</button>
   </div>
+  <div class="card contrib" id="contrib"></div>
   <div class="g4" id="robos"></div>
   <h2>POSIÇÕES ABERTAS</h2>
   <div class="card" id="abertas"><div class="vazio">—</div></div>
@@ -438,6 +477,50 @@ function analise(x){
   L.forEach(function(t){ var d = document.createElement('div'); d.textContent = t; box.appendChild(d); });
   return box;
 }
+function soma(per){ var t = {lucro: 0, ops: 0, ganhos: 0}, p = (D.periodos || {})[per] || {}; ROBOS.forEach(function(r){ var q = p[r.k]; if (q) { t.lucro += q.lucro; t.ops += q.ops; t.ganhos += q.ganhos; } }); return t; }
+function pctConta(v){ var base = (D.saldo || 0) - v; if (base <= 0) return ''; var p = v / base * 100; return (p >= 0 ? '+' : '') + p.toFixed(2).replace('.', ',') + '%'; }
+function txtOps(t){ return t.ops ? t.ops + ' ops · ' + Math.round(100 * t.ganhos / t.ops) + '% ganhos' : 'sem operações'; }
+function placar(){
+  var m = soma('mes'), w = soma('semana'), d = soma('hoje');
+  set('pMes', usd(m.lucro, true), cls(m.lucro));
+  var c = document.getElementById('pMesPct'); c.textContent = pctConta(m.lucro) ? pctConta(m.lucro) + ' da conta' : '—'; c.className = 'chip ' + cls(m.lucro);
+  var best = null, worst = null, pm = D.periodos.mes || {};
+  ROBOS.forEach(function(r){ var q = pm[r.k]; if (!q || !q.ops) return; if (!best || q.lucro > best.v) best = {n: r.n, v: q.lucro}; if (!worst || q.lucro < worst.v) worst = {n: r.n, v: q.lucro}; });
+  set('pMesD', txtOps(m) + (best ? ' · melhor ' + best.n + ' ' + usd(best.v, true) : '') + (worst && worst.v < 0 ? ' · pior ' + worst.n + ' ' + usd(worst.v, true) : ''));
+  set('pHoje', usd(d.lucro, true), cls(d.lucro)); set('pHojeD', txtOps(d));
+  set('pSem', usd(w.lucro, true), cls(w.lucro)); set('pSemD', txtOps(w));
+  // ultimos 7 dias (das ultimas operacoes)
+  var dias = [], mapa = {}, hoje = new Date((D.hora || '').replace(' ', 'T'));
+  if (isNaN(hoje)) hoje = new Date();
+  for (var i = 6; i >= 0; i--) { var x = new Date(hoje.getTime() - i * 864e5), k = ('0' + x.getDate()).slice(-2) + '/' + ('0' + (x.getMonth() + 1)).slice(-2); dias.push({k: k, v: 0, n: 0, sem: x.getDay()}); mapa[k] = dias[dias.length - 1]; }
+  (D.ultimas || []).forEach(function(u){ var k = dia(u.hora); if (mapa[k]) { mapa[k].v += u.lucro; mapa[k].n++; } });
+  var sv = document.getElementById('spark'), W = sv.clientWidth || 320, H = 92, mx = 1, tot = 0;
+  dias.forEach(function(x){ mx = Math.max(mx, Math.abs(x.v)); tot += x.v; });
+  set('sparkTot', usd(tot, true), cls(tot));
+  var bw = W / 7, mid = 44, sc = 30 / mx, out = '<line x1="0" x2="' + W + '" y1="' + mid + '" y2="' + mid + '" stroke="rgba(255,255,255,.15)"/>';
+  var NS = ['dom','seg','ter','qua','qui','sex','sáb'];
+  dias.forEach(function(x, i){
+    var h = Math.max(x.n ? 2 : 0, Math.abs(x.v) * sc), cx = i * bw + bw * .18, w = bw * .64, y = x.v >= 0 ? mid - h : mid, cor = x.v > 0 ? '#4ade80' : (x.v < 0 ? '#f87171' : '#64748b');
+    out += '<rect x="' + cx.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3" fill="' + cor + '" opacity=".9"><title>' + x.k + ': ' + usd(x.v, true) + '</title></rect>';
+    out += '<text x="' + (i * bw + bw / 2).toFixed(1) + '" y="' + (H - 2) + '" text-anchor="middle" font-size="9.5" fill="#8fa0c8" font-family="Exo 2">' + NS[x.sem] + ' ' + x.k.substr(0, 2) + '</text>';
+    if (x.n) out += '<text x="' + (i * bw + bw / 2).toFixed(1) + '" y="' + (x.v >= 0 ? y - 4 : y + h + 11).toFixed(1) + '" text-anchor="middle" font-size="9" fill="' + cor + '" font-family="Exo 2" font-weight="700">' + (x.v >= 0 ? '+' : '-') + Math.abs(Math.round(x.v)) + '</text>';
+  });
+  sv.setAttribute('viewBox', '0 0 ' + W + ' ' + H); sv.innerHTML = out;
+}
+function contribuicao(){
+  var p = D.periodos[P] || {}, t = soma(P), mx = 1, L = [];
+  ROBOS.forEach(function(r){ var q = p[r.k] || {lucro: 0, ops: 0}; L.push({r: r, v: q.lucro, n: q.ops}); mx = Math.max(mx, Math.abs(q.lucro)); });
+  L.sort(function(a, b){ return b.v - a.v; });
+  var nomes = {hoje: 'HOJE', semana: 'NA SEMANA', mes: 'NO MÊS'};
+  var h = '<div class="lbl" style="margin-bottom:6px">Contribuição de cada robô ' + nomes[P].toLowerCase() + '</div>';
+  L.forEach(function(x){
+    var w = Math.abs(x.v) / mx * 50, left = x.v >= 0 ? 50 : 50 - w;
+    h += '<div class="linha"><div class="nmr" style="color:' + x.r.c + '">' + x.r.n + '</div><div class="trilho"><div class="barra" style="left:' + left + '%;width:' + w + '%;background:' + x.r.c + ';color:' + x.r.c + '55;opacity:' + (x.n ? 1 : .25) + '"></div></div><div class="vr ' + cls(x.v) + '">' + (x.n ? usd(x.v, true).replace('US$ ', '') : '—') + '</div></div>';
+  });
+  h += '<div class="tot"><span><span class="lbl">Total ' + nomes[P].toLowerCase() + '</span><div class="mini">' + txtOps(t) + '</div></span><b class="' + cls(t.lucro) + '">' + usd(t.lucro, true) + '</b></div>';
+  document.getElementById('contrib').innerHTML = h;
+  var g = 0; ROBOS.forEach(function(r){ var q = p[r.k]; if (q && q.lucro > 0) g += q.lucro; });
+}
 function desenhar(){
   if (!D) return;
   var idade = (Date.now() - D.recebido) / 1000;
@@ -452,6 +535,7 @@ function desenhar(){
   set('hojeTot', usd(tot, true), cls(tot));
   set('hojeDet', 'Fechado ' + usd(fech, true) + ' · aberto ' + usd(fl, true));
   set('saldo', usd(D.saldo)); set('patr', usd(D.patrimonio));
+  placar(); contribuicao();
   var p = D.periodos[P];
   ROBOS.forEach(function(r){ var q = p[r.k] || Z; set('v_' + r.k, usd(q.lucro, true), cls(q.lucro)); set('d_' + r.k, q.ops + ' ops · ' + (q.ops ? Math.round(100 * q.ganhos / q.ops) : 0) + '% ganhos'); });
   var a = document.getElementById('abertas'); a.innerHTML = '';
