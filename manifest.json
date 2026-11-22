@@ -1,6 +1,6 @@
 {
-  "name": "Jorge Leira Trader",
-  "short_name": "Jorge Leira Trader",
+  "name": "Órbita",
+  "short_name": "Órbita",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -9,13 +9,13 @@
   "theme_color": "#03040b",
   "icons": [
     {
-      "src": "icone3-192.png",
+      "src": "orbita-icone-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icone3-512.png",
+      "src": "orbita-icone-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

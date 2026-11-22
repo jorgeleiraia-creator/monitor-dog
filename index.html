@@ -2,13 +2,15 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Jorge Leira Trader</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icone3-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon-3.png">
+<title>Órbita</title>
+<link rel="manifest" href="manifest.json?v=orbita">
+<link rel="icon" href="orbita-icone-192.png">
+<link rel="apple-touch-icon" href="orbita-apple-180.png">
 <meta name="theme-color" content="#03040b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Órbita">
+<meta name="application-name" content="Órbita">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,7 +105,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 <canvas id="ceu" aria-hidden="true"></canvas>
 <div id="login">
   <svg class="sol" style="width:120px;height:120px;margin:0 auto 18px;display:block" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gh2" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,150,60,.6)"/><stop offset="1" stop-color="rgba(255,110,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="26" fill="url(#gh2)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><image href="planetas/sol.png" x="36" y="36" width="28" height="28"/><g class="orb o1"><image href="planetas/mercurio.png" x="66.5" y="46.5" width="7" height="7"/></g><g class="orb o2"><image href="planetas/venus.png" x="45.5" y="16.5" width="9" height="9"/></g><g class="orb o3"><image href="planetas/terra.png" x="6" y="44" width="12" height="12"/></g><g class="orb o4"><image href="planetas/marte.png" x="45" y="92" width="10" height="10"/></g></svg>
-  <h1>JORGE LEIRA TRADER</h1>
+  <h1>ÓRBITA</h1>
   <p class="sub" style="font-size:14px;margin-top:10px">Digite a chave do app (só na primeira vez).</p>
   <label for="chave" class="lbl">Chave</label>
   <input id="chave" type="password" autocomplete="off">
@@ -113,7 +115,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 <div class="toast" id="toast"></div>
 <div class="wrap" id="app">
   <div class="top">
-    <div class="marca"><svg class="sol" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gh" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,150,60,.6)"/><stop offset="1" stop-color="rgba(255,110,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="26" fill="url(#gh)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><image href="planetas/sol.png" x="36" y="36" width="28" height="28"/><g class="orb o1"><image href="planetas/mercurio.png" x="66.5" y="46.5" width="7" height="7"/></g><g class="orb o2"><image href="planetas/venus.png" x="45.5" y="16.5" width="9" height="9"/></g><g class="orb o3"><image href="planetas/terra.png" x="6" y="44" width="12" height="12"/></g><g class="orb o4"><image href="planetas/marte.png" x="45" y="92" width="10" height="10"/></g></svg><div style="min-width:0"><h1>JORGE LEIRA TRADER</h1><div class="sub" id="conta">conta —</div></div></div>
+    <div class="marca"><svg class="sol" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gh" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,150,60,.6)"/><stop offset="1" stop-color="rgba(255,110,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="26" fill="url(#gh)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><image href="planetas/sol.png" x="36" y="36" width="28" height="28"/><g class="orb o1"><image href="planetas/mercurio.png" x="66.5" y="46.5" width="7" height="7"/></g><g class="orb o2"><image href="planetas/venus.png" x="45.5" y="16.5" width="9" height="9"/></g><g class="orb o3"><image href="planetas/terra.png" x="6" y="44" width="12" height="12"/></g><g class="orb o4"><image href="planetas/marte.png" x="45" y="92" width="10" height="10"/></g></svg><div style="min-width:0"><h1>ÓRBITA</h1><div class="sub" id="conta">conta —</div></div></div>
     <div class="direita">
       <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
       <button class="som" id="bsom" onclick="alternarSom()" aria-label="Ligar ou desligar o alerta sonoro"></button>
