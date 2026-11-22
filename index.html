@@ -147,11 +147,32 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   </div>
   <div class="tabsx">
     <button id="t_resumo" class="sel" onclick="aba('resumo')">RESUMO</button>
+    <button id="t_placar" onclick="aba('placar')">PLACAR</button>
     <button id="t_graf" onclick="aba('graf')">GRÁFICOS<span class="badge" id="nbadge" style="display:none">0</span></button>
   </div>
   <div id="v_graf" style="display:none"><div id="graficos"></div>
     <div class="leg"><span><i style="background:#ffc46b"></i>Entrada</span><span><i style="background:#f87171"></i>Stop</span><span><i style="background:#4ade80"></i>Alvo</span><span><i style="background:#60a5fa"></i>Suporte / resistência</span></div>
     <div class="nota">Gráfico de 5 minutos (escolha 1 a 6 horas acima) · horários de Brasília</div>
+  </div>
+  <div id="v_placar" style="display:none">
+  <div class="card placar">
+    <div class="topo">
+      <div class="lbl">Total do mês · todos os robôs</div><div class="big neu" id="pMes">—</div>
+    </div>
+    <div class="linha2"><span class="chip neu" id="pMesPct">—</span><span class="mini" id="pMesD" style="margin:0"></span></div>
+    <div class="g3">
+      <div class="tile"><div class="lbl">Hoje (fechado)</div><div class="val neu" id="pHoje">—</div><div class="mini" id="pHojeD"></div></div>
+      <div class="tile"><div class="lbl">Semana</div><div class="val neu" id="pSem">—</div><div class="mini" id="pSemD"></div></div>
+    </div>
+    <div class="spark"><div class="cab"><div class="lbl">Últimos 7 dias</div><div class="mini" id="sparkTot"></div></div><svg id="spark" role="img" aria-label="Resultado por dia nos últimos 7 dias"></svg></div>
+  </div>
+
+    <div class="tabs">
+      <button id="pb_hoje" onclick="perP('hoje')">HOJE</button>
+      <button id="pb_semana" onclick="perP('semana')">SEMANA</button>
+      <button id="pb_mes" class="sel" onclick="perP('mes')">MÊS</button>
+    </div>
+    <div class="card contrib" id="contrib"></div>
   </div>
   <div id="v_resumo">
 
@@ -167,26 +188,12 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   </div>
 
 
-  <h2>PLACAR DO SISTEMA</h2>
-  <div class="card placar">
-    <div class="topo">
-      <div class="lbl">Total do mês · todos os robôs</div><div class="big neu" id="pMes">—</div>
-    </div>
-    <div class="linha2"><span class="chip neu" id="pMesPct">—</span><span class="mini" id="pMesD" style="margin:0"></span></div>
-    <div class="g3">
-      <div class="tile"><div class="lbl">Hoje (fechado)</div><div class="val neu" id="pHoje">—</div><div class="mini" id="pHojeD"></div></div>
-      <div class="tile"><div class="lbl">Semana</div><div class="val neu" id="pSem">—</div><div class="mini" id="pSemD"></div></div>
-    </div>
-    <div class="spark"><div class="cab"><div class="lbl">Últimos 7 dias</div><div class="mini" id="sparkTot"></div></div><svg id="spark" role="img" aria-label="Resultado por dia nos últimos 7 dias"></svg></div>
-  </div>
-
   <h2>RESULTADOS FECHADOS</h2>
   <div class="tabs">
     <button id="b_hoje" class="sel" onclick="per('hoje')">HOJE</button>
     <button id="b_semana" onclick="per('semana')">SEMANA</button>
     <button id="b_mes" onclick="per('mes')">MÊS</button>
   </div>
-  <div class="card contrib" id="contrib"></div>
   <div class="g4" id="robos"></div>
   <h2>POSIÇÕES ABERTAS</h2>
   <div class="card" id="abertas"><div class="vazio">—</div></div>
@@ -244,7 +251,7 @@ function conferirAlertas(){
   }
   VISTOS = atual;
 }
-function aba(a){ ABA = a; document.getElementById('t_resumo').className = a === 'resumo' ? 'sel' : ''; document.getElementById('t_graf').className = a === 'graf' ? 'sel' : ''; document.getElementById('v_resumo').style.display = a === 'resumo' ? 'block' : 'none'; document.getElementById('v_graf').style.display = a === 'graf' ? 'block' : 'none'; desenharGraficos(); }
+function aba(a){ ABA = a; ['resumo','placar','graf'].forEach(function(x){ document.getElementById('t_' + x).className = a === x ? 'sel' : ''; document.getElementById('v_' + x).style.display = a === x ? 'block' : 'none'; }); if (a === 'placar' && D) { placar(); contribuicao(); } desenharGraficos(); }
 var ZOOM = 24; try { ZOOM = Number(localStorage.getItem('jlt_zoom')) || 24; } catch(e) {}
 function offPadrao(){ return -Math.max(2, Math.round(ZOOM * 0.15)); }
 function offMin(){ return -Math.round(ZOOM * 0.5); }
@@ -507,8 +514,10 @@ function placar(){
   });
   sv.setAttribute('viewBox', '0 0 ' + W + ' ' + H); sv.innerHTML = out;
 }
+var PP = 'mes';
+function perP(p){ PP = p; ['hoje','semana','mes'].forEach(function(x){ document.getElementById('pb_' + x).className = x === p ? 'sel' : ''; }); contribuicao(); }
 function contribuicao(){
-  var p = D.periodos[P] || {}, t = soma(P), mx = 1, L = [];
+  var P = PP, p = D.periodos[P] || {}, t = soma(P), mx = 1, L = [];
   ROBOS.forEach(function(r){ var q = p[r.k] || {lucro: 0, ops: 0}; L.push({r: r, v: q.lucro, n: q.ops}); mx = Math.max(mx, Math.abs(q.lucro)); });
   L.sort(function(a, b){ return b.v - a.v; });
   var nomes = {hoje: 'HOJE', semana: 'NA SEMANA', mes: 'NO MÊS'};
@@ -535,7 +544,7 @@ function desenhar(){
   set('hojeTot', usd(tot, true), cls(tot));
   set('hojeDet', 'Fechado ' + usd(fech, true) + ' · aberto ' + usd(fl, true));
   set('saldo', usd(D.saldo)); set('patr', usd(D.patrimonio));
-  placar(); contribuicao();
+  if (ABA === 'placar') { placar(); contribuicao(); }
   var p = D.periodos[P];
   ROBOS.forEach(function(r){ var q = p[r.k] || Z; set('v_' + r.k, usd(q.lucro, true), cls(q.lucro)); set('d_' + r.k, q.ops + ' ops · ' + (q.ops ? Math.round(100 * q.ganhos / q.ops) : 0) + '% ganhos'); });
   var a = document.getElementById('abertas'); a.innerHTML = '';
