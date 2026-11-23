@@ -202,7 +202,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
   </div>
-  <div class="aviso"><b>SISTEMA SOLAR</b> · 9 robôs em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
+  <div class="aviso"><b>SISTEMA SOLAR</b> · 11 robôs em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
 </div>
 <script>
 var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
@@ -390,6 +390,7 @@ var ROBOS = [
   {k:'URANO',    n:'URANO',    c:'#7fe0e6', d:'Nasdaq'},
   {k:'NETUNO',   n:'NETUNO',   c:'#5b8cff', d:'GER40'},
   {k:'PLUTAO',   n:'PLUTÃO',   c:'#d8bc98', d:'Ouro'},
+  {k:'COMETA',   n:'COMETA',   c:'#9fd8ff', d:'GER40'},
   {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
 ];
 var FOTO = {MERCURIO:'mercurio',VENUS:'venus',TERRA:'terra',MARTE:'marte',JUPITER:'jupiter',SATURNO:'saturno',URANO:'urano',NETUNO:'netuno',PLUTAO:'plutao',LUA:'lua'};
@@ -421,6 +422,10 @@ function planetaSVG(k){
   } else if(k==='PLUTAO'){
     defs='<radialGradient id="'+id+'b" cx="40%" cy="38%" r="72%"><stop offset="0" stop-color="#e6d3b8"/><stop offset=".6" stop-color="#bfa07c"/><stop offset="1" stop-color="#7d5f45"/></radialGradient>';
     corpo='<circle cx="32" cy="32" r="28" fill="url(#'+id+'b)"/><path d="M14 38c-4-8 2-16 8-14 6 2 4 12-2 18z" fill="#7a4f37" opacity=".7"/><path transform="translate(-7 2)" d="M38 34c-2-5 1-10 5-10 3 0 5 3 5 3 0 0 2-3 5-3 4 0 6 5 4 10-2 6-9 10-9 10s-8-4-10-10z" fill="#f6efe4" opacity=".92"/>';
+  } else if(k==='COMETA'){   // cometa: nucleo gelado com cauda brilhante
+    w=72; vb='-8 0 72 64';
+    defs='<linearGradient id="'+id+'t" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e0f4ff" stop-opacity=".95"/><stop offset=".35" stop-color="#7cc7ff" stop-opacity=".55"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient><radialGradient id="'+id+'n" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#cfe9ff"/><stop offset="1" stop-color="#5aa9e6"/></radialGradient><radialGradient id="'+id+'h" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#bfe6ff" stop-opacity=".8"/><stop offset="1" stop-color="#bfe6ff" stop-opacity="0"/></radialGradient>';
+    return '<svg class="pl" viewBox="'+vb+'" width="'+w+'" height="64" aria-hidden="true" style="width:'+w+'px"><defs>'+defs+'</defs><path d="M44 46 L-6 2 L2 -2 Z" fill="url(#'+id+'t)"/><path d="M44 46 L-8 14 L-2 8 Z" fill="url(#'+id+'t)" opacity=".6"/><circle cx="44" cy="46" r="15" fill="url(#'+id+'h)"/><circle cx="44" cy="46" r="7" fill="url(#'+id+'n)"/><circle cx="12" cy="52" r=".9" fill="#fff" opacity=".7"/><circle cx="56" cy="14" r=".8" fill="#fff" opacity=".6"/><circle cx="30" cy="58" r=".6" fill="#fff" opacity=".5"/></svg>';
   } else {   // COPY: satelite retransmitindo o sinal
     w=72; vb='-4 0 72 64';
     defs='<linearGradient id="'+id+'p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93c5fd"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient><linearGradient id="'+id+'m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1f5f9"/><stop offset="1" stop-color="#64748b"/></linearGradient>';
@@ -441,7 +446,7 @@ function montarRobos(){
   });
 }
 function analise(x){
-  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', ter = x.fonte === 'TERRA', ven = x.fonte === 'VENUS', ura = x.fonte === 'URANO', lua = x.fonte === 'LUA', frac = null;
+  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', ter = x.fonte === 'TERRA', ven = x.fonte === 'VENUS', ura = x.fonte === 'URANO', lua = x.fonte === 'LUA', com = x.fonte === 'COMETA', frac = null;
   var sem_stop = (!copy && x.risco === null);
   if (x.favor === 1) L.push('✅ A favor da tendência (média longa do gráfico)');
   else if (x.favor === -1) L.push('⚠️ Contra a tendência (média longa do gráfico)');
@@ -461,7 +466,9 @@ function analise(x){
   else if (jup) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (4x o stop), no stop, no sinal contrário, depois de 6 h ou na virada do dia');
   else if (mar) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (3x o stop), no stop, no sinal contrário ou na virada do dia');
   else if (net) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo da cesta (1,5R), na cor contrária do IFR ou no stop · zera no fim do dia');
-  else if (plu || sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
+  else if (com) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (outro lado da caixa de NY), vai pro 0x0 depois de andar 1x o risco e zera em até 24 h · faltam ' + Math.max(0, 1440 - x.min) + ' min');
+  else if (plu) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (outro lado da caixa da madrugada), vai pro 0x0 depois de andar 1x o risco e zera às 17:45');
+  else if (sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
   if (lua) L.push('📊 LUA nos testes (Nasdaq, ticks reais, gama e paredes ZeroGEX + VIX): gain médio ~US$ 127, loss médio ~US$ 40 com lote 1,0. PF ~2,4. Amostra ainda curta (4 meses)');
@@ -472,7 +479,8 @@ function analise(x){
   else if (mar) L.push('📊 MARTE nos testes (GER40, 2 anos, ticks reais): lucro ~US$ 3.074 no lote 1, PF 2,37. Pullback a favor da tendência');
   else if (net) L.push('📊 NETUNO nos testes (GER40, 2 anos, ticks reais): acerta ~6 em 10, gain médio ~US$ 54 e loss médio ~US$ 55 no lote 1. PF 1,55. Pode abrir 1 preço médio (2º lote)');
   else if (sat) L.push('📊 SATURNO nos testes (2 anos, ticks reais): acerta ~3 em 10, mas o gain médio (~US$ 199 no 0,03) paga ~4 losses (~US$ 52). PF 1,56 a 1,84. Operação dura ~5 h');
-  else if (plu) L.push('📊 PLUTÃO nos testes (2 anos + 7 meses fora): acerta ~3 em 10, mas cada gain paga ~3,5 stops (PF 1,5 a 1,6). Stop é normal, o resultado vem dos gains');
+  else if (plu) L.push('📊 PLUTÃO 2.0 nos testes (ouro, 2 anos, ticks reais): acerta ~6 em 10, PF 1,93. Gain médio ~US$ 27 e loss médio ~US$ 21 no lote 0,01. Não entra quando o Nasdaq subiu nas últimas 4 h');
+  else if (com) L.push('📊 COMETA nos testes (GER40, 2 anos, ticks reais): acerta ~5 em 10, PF 2,53. Gain médio ~US$ 40 e loss médio ~US$ 18 com risco de US$ 25. Só opera em dia de gama baixo do S&P');
   else if (!copy) L.push('📊 No teste de 12 meses, 87% das operações do MERCÚRIO fecharam no lucro (PF 2,39)');
   else if (D.hist30 && D.hist30.COPY.ops) { var h = D.hist30.COPY; L.push('📊 Desde ' + dia(D.desde) + ': ' + Math.round(100 * h.ganhos / h.ops) + '% das ' + h.ops + ' operações do Copy fecharam no lucro (resultado ' + usd(h.lucro, true) + ')'); }
   var selo = 'at', txt = '🟡 ATENÇÃO';
