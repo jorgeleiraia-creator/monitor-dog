@@ -202,7 +202,7 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
   </div>
-  <div class="aviso"><b>SISTEMA SOLAR</b> · 11 robôs em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
+  <div class="aviso"><b>SISTEMA SOLAR</b> · 9 planetas em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
 </div>
 <script>
 var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
@@ -381,16 +381,16 @@ function regiao(x){
 }
 var ROBOS = [
   {k:'MERCURIO', n:'MERCÚRIO', c:'#c9c4bc', d:'Ouro'},
-  {k:'VENUS',    n:'VÊNUS',    c:'#f2b45a', d:'S&P 500'},
+  {k:'VENUS',    n:'VÊNUS',    c:'#f2b45a', d:'Nasdaq'},
   {k:'TERRA',    n:'TERRA',    c:'#4fc3f7', d:'Nasdaq'},
-  {k:'LUA',      n:'LUA',      c:'#dfe3ea', d:'Nasdaq'},
+  {k:'LUA',      n:'LUA',      c:'#dfe3ea', d:'Nasdaq', oculto:true},
   {k:'MARTE',    n:'MARTE',    c:'#e8743f', d:'GER40'},
   {k:'JUPITER',  n:'JÚPITER',  c:'#d9a66b', d:'Nasdaq'},
   {k:'SATURNO',  n:'SATURNO',  c:'#e6cf98', d:'Ouro'},
   {k:'URANO',    n:'URANO',    c:'#7fe0e6', d:'Nasdaq'},
   {k:'NETUNO',   n:'NETUNO',   c:'#5b8cff', d:'GER40'},
   {k:'PLUTAO',   n:'PLUTÃO',   c:'#d8bc98', d:'Ouro'},
-  {k:'COMETA',   n:'COMETA',   c:'#9fd8ff', d:'GER40'},
+  {k:'COMETA',   n:'COMETA',   c:'#9fd8ff', d:'GER40', oculto:true},
   {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
 ];
 var FOTO = {MERCURIO:'mercurio',VENUS:'venus',TERRA:'terra',MARTE:'marte',JUPITER:'jupiter',SATURNO:'saturno',URANO:'urano',NETUNO:'netuno',PLUTAO:'plutao',LUA:'lua'};
@@ -439,6 +439,7 @@ function tagHtml(f){ var r = ROB(f); return '<span class="tag" style="color:' + 
 function montarRobos(){
   var g = document.getElementById('robos'); g.innerHTML = '';
   ROBOS.forEach(function(r){
+    if (r.oculto) return;
     var c = document.createElement('div'); c.className = 'card rob' + (r.full ? ' full' : ''); c.style.borderColor = r.c + '40';
     c.innerHTML = planetaSVG(r.k) +
       '<div class="nm" style="color:' + r.c + ';text-shadow:0 0 12px ' + r.c + '66">' + r.n + '</div><div class="ds">' + (r.d || '&nbsp;') + '</div><div class="val" id="v_' + r.k + '">—</div><div class="mini" id="d_' + r.k + '"></div>';
@@ -461,26 +462,28 @@ function analise(x){
     if (x.prog !== null && x.prog >= 0) L.push('📈 Já fez ' + Math.min(x.prog, 100) + '% do caminho até o alvo');
     if (!sem_stop && !x.protegido && x.lucro < 0 && x.risco < 0) { frac = Math.round(100 * x.lucro / x.risco); L.push('📉 Já andou ' + frac + '% do caminho até o stop'); }
   }
-  if (lua) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop, no alvo (4x o stop, só na venda Vanna), aos 15 min (Vanna) ou 30 min (impulso) · máximo 30 min · faltam ' + Math.max(0, 30 - x.min) + ' min');
-  else if (ter || ven || ura) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%), aos 60 min ou às 18:00 (fecha Nova York) · faltam ' + Math.max(0, 60 - x.min) + ' min');
-  else if (jup) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (4x o stop), no stop, no sinal contrário, depois de 6 h ou na virada do dia');
+  if (lua) L.push('⏱️ Aberta há ' + x.min + ' min · LUA foi desligada (virou o TERRA 2.0) · sai no stop, no alvo ou aos 30 min');
+  else if (ter) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop ou no tempo: impulso e contra 30 min (faltam ' + Math.max(0, 30 - x.min) + '), Vanna 15 min com alvo 4x o stop · zera às 17:59');
+  else if (ven) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%), no alvo (2x o stop) ou aos 20 min · faltam ' + Math.max(0, 20 - x.min) + ' min');
+  else if (ura) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%) ou no alvo (3x o stop) · ao chegar em 1,5x o stop trava +1x no bolso · zera às 18:00');
+  else if (jup) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (4x o stop), no stop, no 0x0 ou no stop móvel · trades rápidos (~3 min)');
   else if (mar) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo (3x o stop), no stop, no sinal contrário ou na virada do dia');
   else if (net) L.push('⏱️ Aberta há ' + x.min + ' min · sai no alvo da cesta (1,5R), na cor contrária do IFR ou no stop · zera no fim do dia');
-  else if (com) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (outro lado da caixa de NY), vai pro 0x0 depois de andar 1x o risco e zera em até 24 h · faltam ' + Math.max(0, 1440 - x.min) + ' min');
-  else if (plu) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (outro lado da caixa da madrugada), vai pro 0x0 depois de andar 1x o risco e zera às 17:45');
+  else if (com) L.push('⏱️ Aberta há ' + x.min + ' min · COMETA está na reserva · sai no stop, no 0x0 ou em até 24 h');
+  else if (plu) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (outro lado da caixa da madrugada), no alvo (3x o risco), vai pro 0x0 depois de andar 1x o risco e zera às 17:45');
   else if (sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
-  if (lua) L.push('📊 LUA nos testes (Nasdaq, ticks reais, gama e paredes ZeroGEX + VIX): gain médio ~US$ 127, loss médio ~US$ 40 com lote 1,0. PF ~2,4. Amostra ainda curta (4 meses)');
-  else if (ter) L.push('📊 TERRA nos testes (Nasdaq, fluxo de opções GrixCore + gama ZeroGEX): gain médio ~US$ 61, loss médio ~US$ 19 com lote 0,60. PF ~3. Amostra ainda curta');
-  else if (ura) L.push('📊 URANO nos testes (Nasdaq, IFR Turbo no 1 minuto + sondas GrixCore e ZeroGEX): gain médio ~US$ 72, loss médio ~US$ 19 com lote 0,80. Acerta ~6 em 10. Amostra ainda curta');
-  else if (ven) L.push('📊 VÊNUS nos testes (S&P 500, fluxo de opções GrixCore + gama ZeroGEX): gain médio ~US$ 45, loss médio ~US$ 15 com lote 3. Acerta ~6 em 10. Amostra ainda curta');
-  else if (jup) L.push('📊 JÚPITER nos testes (Nasdaq, 2 anos, ticks reais): lucro ~US$ 2.992 no lote 1, PF 3,74. Só opera com Nova York aberta');
+  if (lua) L.push('📊 LUA foi desligada em 23/11 (a estratégia dela virou o TERRA 2.0)');
+  else if (ter) L.push('📊 TERRA 2.0 nos testes (Nasdaq, 4 meses, gama ZeroGEX + VIX): ~2 trades por dia, gain médio ~US$ 105, loss médio ~US$ 39 com lote 1,0. PF 2,71. Trades de ~15 min');
+  else if (ura) L.push('📊 URANO 2.0 nos testes (Nasdaq, 4 meses, IFR Turbo só com gama negativo + placar de 5 sondas): gain médio ~US$ 129, loss médio ~US$ 47 com lote 0,80. PF 2,61. Trades de ~21 min');
+  else if (ven) L.push('📊 VÊNUS 3.0 nos testes (Nasdaq, 4 meses, aceleração do gama ZeroGEX + placar de 5 sondas): acerta ~6,5 em 10, gain médio ~US$ 75, loss médio ~US$ 33 com lote 1,0. PF 4,18. Trades de até 20 min');
+  else if (jup) L.push('📊 JÚPITER (gatilho PHC da GrixCore) nos testes: acerta ~8 em 10, gain médio ~US$ 36, loss médio ~US$ 25 com lote 1,0. PF 5,2 em 9 pregões (amostra curta). Só opera com Nova York aberta');
   else if (mar) L.push('📊 MARTE nos testes (GER40, 2 anos, ticks reais): lucro ~US$ 3.074 no lote 1, PF 2,37. Pullback a favor da tendência');
   else if (net) L.push('📊 NETUNO nos testes (GER40, 2 anos, ticks reais): acerta ~6 em 10, gain médio ~US$ 54 e loss médio ~US$ 55 no lote 1. PF 1,55. Pode abrir 1 preço médio (2º lote)');
   else if (sat) L.push('📊 SATURNO nos testes (2 anos, ticks reais): acerta ~3 em 10, mas o gain médio (~US$ 199 no 0,03) paga ~4 losses (~US$ 52). PF 1,56 a 1,84. Operação dura ~5 h');
-  else if (plu) L.push('📊 PLUTÃO 2.0 nos testes (ouro, 2 anos, ticks reais): acerta ~6 em 10, PF 1,93. Gain médio ~US$ 27 e loss médio ~US$ 21 no lote 0,01. Não entra quando o Nasdaq subiu nas últimas 4 h');
-  else if (com) L.push('📊 COMETA nos testes (GER40, 2 anos, ticks reais): acerta ~5 em 10, PF 2,53. Gain médio ~US$ 40 e loss médio ~US$ 18 com risco de US$ 25. Só opera em dia de gama baixo do S&P');
+  else if (plu) L.push('📊 PLUTÃO 2.03 nos testes (ouro, 2 anos, vela de 30 min): acerta ~6 em 10, PF 1,78. Gain médio ~US$ 32 e loss médio ~US$ 27 no lote 0,01. Não entra quando o Nasdaq subiu nas últimas 4 h');
+  else if (com) L.push('📊 COMETA está na reserva desde 23/11 (fora da conta real)');
   else if (!copy) L.push('📊 No teste de 12 meses, 87% das operações do MERCÚRIO fecharam no lucro (PF 2,39)');
   else if (D.hist30 && D.hist30.COPY.ops) { var h = D.hist30.COPY; L.push('📊 Desde ' + dia(D.desde) + ': ' + Math.round(100 * h.ganhos / h.ops) + '% das ' + h.ops + ' operações do Copy fecharam no lucro (resultado ' + usd(h.lucro, true) + ')'); }
   var selo = 'at', txt = '🟡 ATENÇÃO';
@@ -529,7 +532,7 @@ var PP = 'mes';
 function perP(p){ PP = p; ['hoje','semana','mes'].forEach(function(x){ document.getElementById('pb_' + x).className = x === p ? 'sel' : ''; }); contribuicao(); }
 function contribuicao(){
   var P = PP, p = D.periodos[P] || {}, t = soma(P), mx = 1, L = [];
-  ROBOS.forEach(function(r){ var q = p[r.k] || {lucro: 0, ops: 0}; L.push({r: r, v: q.lucro, n: q.ops}); mx = Math.max(mx, Math.abs(q.lucro)); });
+  ROBOS.forEach(function(r){ var q = p[r.k] || {lucro: 0, ops: 0}; if (r.oculto && !q.ops) return; L.push({r: r, v: q.lucro, n: q.ops}); mx = Math.max(mx, Math.abs(q.lucro)); });
   L.sort(function(a, b){ return b.v - a.v; });
   var nomes = {hoje: 'HOJE', semana: 'NA SEMANA', mes: 'NO MÊS'};
   var h = '<div class="lbl" style="margin-bottom:6px">Contribuição de cada robô ' + nomes[P].toLowerCase() + '</div>';
@@ -557,7 +560,7 @@ function desenhar(){
   set('saldo', usd(D.saldo)); set('patr', usd(D.patrimonio));
   if (ABA === 'placar') { placar(); contribuicao(); }
   var p = D.periodos[P];
-  ROBOS.forEach(function(r){ var q = p[r.k] || Z; set('v_' + r.k, usd(q.lucro, true), cls(q.lucro)); set('d_' + r.k, q.ops + ' ops · ' + (q.ops ? Math.round(100 * q.ganhos / q.ops) : 0) + '% ganhos'); });
+  ROBOS.forEach(function(r){ if (r.oculto) return; var q = p[r.k] || Z; set('v_' + r.k, usd(q.lucro, true), cls(q.lucro)); set('d_' + r.k, q.ops + ' ops · ' + (q.ops ? Math.round(100 * q.ganhos / q.ops) : 0) + '% ganhos'); });
   var a = document.getElementById('abertas'); a.innerHTML = '';
   if (!D.posicoes.length) a.innerHTML = '<div class="vazio">Nenhuma posição aberta</div>';
   D.posicoes.forEach(function(x){
