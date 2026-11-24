@@ -123,6 +123,8 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 .contrib .tot .lbl{letter-spacing:.12em}
 .rob .share{height:3px;border-radius:2px;margin-top:8px;position:relative;background:rgba(255,255,255,.06);overflow:hidden}
 .rob .share i{display:block;height:100%;border-radius:2px}
+.zerar{width:100%;padding:12px;margin:0 0 6px;border-radius:14px;border:1px solid rgba(248,113,113,.6);background:rgba(248,113,113,.12);color:#fca5a5;font-family:Orbitron,sans-serif;font-weight:800;letter-spacing:.1em;font-size:12px;min-height:46px;cursor:pointer;box-shadow:0 0 14px rgba(248,113,113,.2)}
+#zerarSt{margin:0 0 10px;min-height:14px}
 </style>
 </head>
 <body>
@@ -196,13 +198,15 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   </div>
   <div class="g4" id="robos"></div>
   <h2>POSIÇÕES ABERTAS</h2>
+  <button class="zerar" id="btnZerar" onclick="zerarRobos()">⛔ ZERAR POSIÇÕES DOS ROBÔS</button>
+  <div class="mini" id="zerarSt"></div>
   <div class="card" id="abertas"><div class="vazio">—</div></div>
 
   <h2>ÚLTIMAS OPERAÇÕES (7 DIAS)</h2>
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
   </div>
-  <div class="aviso"><b>SISTEMA SOLAR</b> · 9 planetas em órbita<br>Somente leitura · nenhuma ordem pode ser enviada daqui · horários de Brasília</div>
+  <div class="aviso"><b>SISTEMA SOLAR</b> · 9 planetas em órbita<br>Só lê a conta · único comando: ZERAR (fecha as posições dos robôs, nunca abre ordem) · horários de Brasília</div>
 </div>
 <script>
 var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
@@ -584,11 +588,27 @@ function desenhar(){
     u.appendChild(r);
   });
 }
+var ZID = null;
+function zerarRobos(){
+  if (!K) return;
+  var r = prompt('ZERAR POSIÇÕES DOS ROBÔS\n\nFecha AGORA todas as posições abertas dos robôs.\nNão abre nenhuma ordem e não mexe nas posições do Copy.\nOs robôs podem voltar a entrar no próximo sinal.\n\nDigite ZERAR para confirmar:');
+  if (!r || r.trim().toUpperCase() !== 'ZERAR') { avisar('Cancelado', 'Nenhuma posição foi fechada', false); return; }
+  set('zerarSt', '⏳ Enviando o comando...');
+  fetch(API + '?cmd=zerar&conf=ZERAR&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(x){ return x.text(); }).then(function(t){
+    if (t.indexOf('registrado') === 0) { ZID = t.split('|')[1]; set('zerarSt', '⏳ Comando enviado às ' + new Date().toLocaleTimeString('pt-BR') + ' · o MetaTrader fecha em até ~20 s'); avisar('⛔ ZERAR enviado', 'O MetaTrader vai fechar as posições dos robôs em segundos', false); }
+    else set('zerarSt', '❌ Não foi possível enviar (' + t + ')');
+  }).catch(function(){ set('zerarSt', '❌ Sem conexão: tente de novo'); });
+}
+function statusZerar(){
+  if (!D || !D.zerar || !D.zerar.id) return;
+  var z = D.zerar; if (ZID && String(z.id) !== String(ZID)) return;
+  set('zerarSt', '✅ Zerado às ' + z.hora + ' · ' + z.fechadas + ' posição(ões) fechada(s)' + (z.falhas ? ' · ⚠️ ' + z.falhas + ' não fecharam' : ''));
+}
 function buscar(){
   if (!K) return;
   fetch(API + '?json=1&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(r){ return r.text(); }).then(function(t){
     if (t === 'negado') { try { localStorage.removeItem('monitor_dog_chave'); } catch(e) {} K = null; mostrar(); document.getElementById('lerro').textContent = 'Chave errada, tente de novo.'; return; }
-    if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); } catch(e) {} }
+    if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); statusZerar(); } catch(e) {} }
   }).catch(function(){});
 }
 (function(){
