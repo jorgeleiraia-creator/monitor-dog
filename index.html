@@ -125,6 +125,8 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 .rob .share i{display:block;height:100%;border-radius:2px}
 .zerar{width:100%;padding:12px;margin:0 0 6px;border-radius:14px;border:1px solid rgba(248,113,113,.6);background:rgba(248,113,113,.12);color:#fca5a5;font-family:Orbitron,sans-serif;font-weight:800;letter-spacing:.1em;font-size:12px;min-height:46px;cursor:pointer;box-shadow:0 0 14px rgba(248,113,113,.2)}
 #zerarSt{margin:0 0 10px;min-height:14px}
+.deslig{width:100%;padding:12px;margin:0 0 6px;border-radius:14px;border:1px solid rgba(251,191,36,.6);background:rgba(251,191,36,.10);color:#fcd34d;font-family:Orbitron,sans-serif;font-weight:800;letter-spacing:.1em;font-size:12px;min-height:46px;cursor:pointer;box-shadow:0 0 14px rgba(251,191,36,.18)}
+#algoSt{margin:0 0 10px;min-height:14px}
 </style>
 </head>
 <body>
@@ -200,13 +202,15 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   <h2>POSIÇÕES ABERTAS</h2>
   <button class="zerar" id="btnZerar" onclick="zerarRobos()">⛔ ZERAR POSIÇÕES DOS ROBÔS</button>
   <div class="mini" id="zerarSt"></div>
+  <button class="deslig" id="btnDeslig" onclick="desligarAlgo()">⏸ DESLIGAR ALGOTRADING</button>
+  <div class="mini" id="algoSt"></div>
   <div class="card" id="abertas"><div class="vazio">—</div></div>
 
   <h2>ÚLTIMAS OPERAÇÕES (7 DIAS)</h2>
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
   </div>
-  <div class="aviso"><b>SISTEMA SOLAR</b> · 9 planetas em órbita<br>Só lê a conta · único comando: ZERAR (fecha as posições dos robôs, nunca abre ordem) · horários de Brasília</div>
+  <div class="aviso"><b>SISTEMA SOLAR</b> · 9 planetas em órbita<br>Só lê a conta · comandos: ZERAR (fecha as posições dos robôs) e DESLIGAR ALGOTRADING (para os robôs; ligar de novo só no PC) · nunca abre ordem · horários de Brasília</div>
 </div>
 <script>
 var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
@@ -599,6 +603,27 @@ function zerarRobos(){
     else set('zerarSt', '❌ Não foi possível enviar (' + t + ')');
   }).catch(function(){ set('zerarSt', '❌ Sem conexão: tente de novo'); });
 }
+var DID = null;
+function desligarAlgo(){
+  if (!K) return;
+  if (D && D.algo === false) { avisar('Já está desligado', 'O Algotrading já está DESLIGADO no MetaTrader', false); return; }
+  var r = prompt('DESLIGAR ALGOTRADING\n\nTodos os robôs param de abrir operações.\nAs posições abertas CONTINUAM abertas, com stop e alvo.\nPara sair de tudo, aperte ZERAR antes.\nPara ligar de novo, só no computador.\n\nDigite DESLIGAR para confirmar:');
+  if (!r || r.trim().toUpperCase() !== 'DESLIGAR') { avisar('Cancelado', 'O Algotrading continua como estava', false); return; }
+  set('algoSt', '⏳ Enviando o comando...');
+  fetch(API + '?cmd=desligar&conf=DESLIGAR&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(x){ return x.text(); }).then(function(t){
+    if (t.indexOf('registrado') === 0) { DID = t.split('|')[1]; set('algoSt', '⏳ Comando enviado às ' + new Date().toLocaleTimeString('pt-BR') + ' · o MetaTrader desliga em até ~20 s'); avisar('⏸ DESLIGAR enviado', 'O MetaTrader vai desligar o Algotrading em segundos', false); }
+    else set('algoSt', '❌ Não foi possível enviar (' + t + ')');
+  }).catch(function(){ set('algoSt', '❌ Sem conexão: tente de novo'); });
+}
+function statusAlgo(){
+  if (!D || typeof D.algo === 'undefined') return;
+  var b = document.getElementById('btnDeslig');
+  var txt = D.algo ? '🟢 Algotrading LIGADO' : '🔴 Algotrading DESLIGADO · para ligar de novo, só no computador';
+  if (D.desligar && D.desligar.id && (!DID || String(D.desligar.id) === String(DID))) txt += ' · desligado pelo app às ' + D.desligar.hora;
+  if (DID && D.algo && (!D.desligar || String(D.desligar.id) !== String(DID))) txt = '⏳ Aguardando o MetaTrader desligar...';
+  set('algoSt', txt);
+  if (b) b.style.opacity = D.algo ? '1' : '.45';
+}
 function statusZerar(){
   if (!D || !D.zerar || !D.zerar.id) return;
   var z = D.zerar; if (ZID && String(z.id) !== String(ZID)) return;
@@ -608,7 +633,7 @@ function buscar(){
   if (!K) return;
   fetch(API + '?json=1&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(r){ return r.text(); }).then(function(t){
     if (t === 'negado') { try { localStorage.removeItem('monitor_dog_chave'); } catch(e) {} K = null; mostrar(); document.getElementById('lerro').textContent = 'Chave errada, tente de novo.'; return; }
-    if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); statusZerar(); } catch(e) {} }
+    if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); statusZerar(); statusAlgo(); } catch(e) {} }
   }).catch(function(){});
 }
 (function(){
