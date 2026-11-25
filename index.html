@@ -706,14 +706,17 @@ function statusZerar(){
   var z = D.zerar; if (ZID && String(z.id) !== String(ZID)) return;
   set('zerarSt', '✅ Zerado às ' + z.hora + ' · ' + z.fechadas + ' posição(ões) fechada(s)' + (z.falhas ? ' · ⚠️ ' + z.falhas + ' não fecharam' : ''));
 }
+var BUSCANDO = false;
 function buscar(){
-  if (!K) return;
-  fetch(API + '?json=1&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(r){ return r.text(); }).then(function(t){
+  if (!K || BUSCANDO || document.hidden) return;
+  BUSCANDO = true; var fim = setTimeout(function(){ BUSCANDO = false; }, 15000);
+  fetch(API + '?json=1&k=' + encodeURIComponent(K), {cache: 'no-store'}).then(function(r){ return r.text(); }).then(function(t){ clearTimeout(fim); BUSCANDO = false;
     if (t === 'negado') { try { localStorage.removeItem('monitor_dog_chave'); } catch(e) {} K = null; mostrar(); document.getElementById('lerro').textContent = 'Chave errada, tente de novo.'; return; }
     if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); statusZerar(); statusAlgo(); } catch(e) {} }
-  }).catch(function(){});
+  }).catch(function(){ clearTimeout(fim); BUSCANDO = false; });
 }
-montarRobos(); botaoSom(); mostrar(); fita(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
+montarRobos(); botaoSom(); mostrar(); fita(); buscar(); setInterval(buscar, 2000); setInterval(desenhar, 1000);
+document.addEventListener('visibilitychange', function(){ if (!document.hidden) buscar(); });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
