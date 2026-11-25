@@ -2,19 +2,19 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Órbita</title>
-<link rel="manifest" href="manifest.json?v=orbita3">
-<link rel="icon" href="orbita2-192.png">
-<link rel="apple-touch-icon" href="orbita2-apple-180.png">
-<meta name="theme-color" content="#03040b">
+<title>Investing Terminal</title>
+<link rel="manifest" href="manifest.json?v=it1">
+<link rel="icon" href="it-192.png">
+<link rel="apple-touch-icon" href="it-apple-180.png">
+<meta name="theme-color" content="#04070D">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Órbita">
-<meta name="application-name" content="Órbita">
+<meta name="apple-mobile-web-app-title" content="Investing">
+<meta name="application-name" content="Investing Terminal">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Exo+2:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#03040b;--card:rgba(14,20,44,.55);--borda:rgba(120,150,255,.16);--txt:#e8ecf8;--sub:#8fa0c8;--ouro:#ffc46b;--verde:#4ade80;--verm:#f87171;--azul:#60a5fa;--neon:#7dd3fc}
 *{box-sizing:border-box}
@@ -127,28 +127,97 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
 #zerarSt{margin:0 0 10px;min-height:14px}
 .deslig{width:100%;padding:12px;margin:0 0 6px;border-radius:14px;border:1px solid rgba(251,191,36,.6);background:rgba(251,191,36,.10);color:#fcd34d;font-family:Orbitron,sans-serif;font-weight:800;letter-spacing:.1em;font-size:12px;min-height:46px;cursor:pointer;box-shadow:0 0 14px rgba(251,191,36,.18)}
 #algoSt{margin:0 0 10px;min-height:14px}
+/* ===== Investing Terminal (tema novo) ===== */
+:root{--bg:#04070D;--card:rgba(12,20,36,.9);--borda:#1E2A44;--txt:#E8F1FF;--sub:#7C8BA6;--ouro:#FFB84D;--verde:#2FD07F;--verm:#FF5A5A;--azul:#3D8BFF;--neon:#22E1FF}
+html{background:#04070D}
+body{background:radial-gradient(120% 40% at 50% 0%,rgba(34,225,255,.16),transparent 60%),repeating-linear-gradient(0deg,rgba(34,225,255,.045) 0 1px,transparent 1px 28px),repeating-linear-gradient(90deg,rgba(34,225,255,.045) 0 1px,transparent 1px 28px),#04070D;background-attachment:scroll;animation:itGrid 6s linear infinite}
+#ceu{display:none}
+@keyframes itGrid{from{background-position:0 0,0 0,0 0,0 0}to{background-position:0 0,0 28px,28px 0,0 0}}
+.wrap{padding-top:calc(8px + env(safe-area-inset-top))}
+.tape{margin:0 -16px 6px;height:46px;overflow:hidden;border-bottom:1px solid rgba(34,225,255,.25)}
+.topo-it{position:relative;display:flex;justify-content:center;padding:8px 0 14px}
+.logo-it{width:min(200px,52vw);height:auto;animation:itFloat 4.5s ease-in-out infinite,itGlowLogo 4.5s ease-in-out infinite}
+@keyframes itFloat{0%,100%{transform:perspective(600px) rotateX(6deg) translateY(0)}50%{transform:perspective(600px) rotateX(6deg) translateY(-8px)}}
+@keyframes itGlowLogo{0%,100%{filter:drop-shadow(0 16px 16px rgba(0,0,0,.85)) drop-shadow(0 0 18px rgba(34,225,255,.35))}50%{filter:drop-shadow(0 22px 18px rgba(0,0,0,.85)) drop-shadow(0 0 34px rgba(34,225,255,.75))}}
+.topo-it .pill{position:absolute;top:2px;right:0;font-size:9.5px;padding:5px 9px}
+.topo-it .som{position:absolute;top:8px;left:0}
+.conta-it{text-align:center;font-size:11px;color:var(--sub);margin:-4px 0 12px}
+.pill{font-family:Orbitron,sans-serif;letter-spacing:.08em}
+.on{color:#5BE39C;border-color:rgba(47,208,127,.5);background:rgba(47,208,127,.12);box-shadow:0 0 12px rgba(47,208,127,.25)}
+.on .dot{background:#2FD07F;box-shadow:0 0 8px #2FD07F;animation:ping 1.8s infinite}
+.off{color:#FF8A8A;border-color:rgba(255,59,59,.6);background:rgba(255,59,59,.14);box-shadow:0 0 12px rgba(255,59,59,.35)}
+.off .dot{background:#FF3B3B;box-shadow:0 0 8px #FF3B3B}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(47,208,127,.7)}100%{box-shadow:0 0 0 9px rgba(47,208,127,0)}}
+.som{background:rgba(10,18,34,.9);border-color:#2A3E62;box-shadow:0 4px 0 rgba(0,0,0,.5)}
+.card,.gcard{background:linear-gradient(180deg,rgba(18,28,50,.95),rgba(8,14,26,.95));border:1px solid var(--borda);box-shadow:0 16px 30px rgba(0,0,0,.65),0 4px 0 rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.10),inset 0 -2px 6px rgba(0,0,0,.35);backdrop-filter:none;-webkit-backdrop-filter:none}
+.hero{border-color:rgba(34,225,255,.4);background:linear-gradient(160deg,rgba(20,34,60,.95),rgba(8,14,26,.95));transform:perspective(900px) rotateX(5deg);overflow:hidden}
+.hero:before{content:"";position:absolute;top:0;bottom:0;left:0;right:auto;width:35%;height:auto;border-radius:0;background:linear-gradient(90deg,transparent,rgba(34,225,255,.12),transparent);animation:itScan 5s ease-in-out infinite;pointer-events:none}
+.hero:after{display:none}
+@keyframes itScan{0%{transform:translateX(-120%)}100%{transform:translateX(320%)}}
+.lbl{color:#7FE9FF}
+.big{font-family:"JetBrains Mono",monospace}
+.pos{color:#2FD07F;text-shadow:0 2px 0 #0E5A33,0 0 18px rgba(47,208,127,.45)}
+.neg{color:#FF5A5A;text-shadow:0 2px 0 #5A1414,0 0 14px rgba(255,90,90,.4)}
+.val{font-family:"JetBrains Mono",monospace}
+.tabs button,.tabsx button,.zoom button{background:rgba(10,18,34,.9);border-color:var(--borda);color:#A9B8D0}
+.tabs button.sel,.zoom button.sel,.tabsx button.sel{background:linear-gradient(90deg,#22E1FF,#3D8BFF);color:#04070D;border-color:#22E1FF;box-shadow:0 4px 0 #1A5A8A,0 8px 16px rgba(34,225,255,.35),inset 0 1px 0 rgba(255,255,255,.5);font-weight:800}
+h2{color:#7FE9FF}
+h2:after{background:linear-gradient(90deg,rgba(34,225,255,.45),transparent)}
+.btn-cal{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;margin:4px 0 6px;border-radius:14px;border:1px solid rgba(34,225,255,.7);background:linear-gradient(180deg,rgba(34,225,255,.22),rgba(10,40,70,.6));color:#BFF4FF;font-family:Orbitron,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.12em;cursor:pointer;box-shadow:0 6px 0 #0B3A55,0 14px 24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-cal:active,.zerar:active,.deslig:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.6)}
+.zerar{background:linear-gradient(180deg,rgba(255,107,107,.25),rgba(120,20,20,.25));border-color:rgba(255,107,107,.7);color:#FFB3B3;box-shadow:0 6px 0 #5A1414,0 14px 24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.2);margin-top:6px}
+.deslig{background:linear-gradient(180deg,rgba(255,184,77,.22),rgba(110,70,10,.25));border-color:rgba(255,184,77,.7);color:#FFE0A8;box-shadow:0 6px 0 #5A3A08,0 14px 24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.2);margin-top:6px}
+#robos{display:flex;flex-direction:column;gap:12px}
+.rbt{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;border:1px solid;margin:0}
+.rbt .ft{width:84px;height:84px;flex:none;border-radius:16px;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;transform:perspective(260px) rotateY(-14deg) rotateX(8deg);box-shadow:8px 12px 20px rgba(0,0,0,.7),inset 0 2px 0 rgba(255,255,255,.14),inset 0 -4px 8px rgba(0,0,0,.5)}
+.rbt .ft img{width:84px;height:84px;object-fit:contain;object-position:center top;animation:itBreath 3.2s ease-in-out infinite}
+@keyframes itBreath{0%,100%{filter:drop-shadow(4px 8px 6px rgba(0,0,0,.85)) brightness(1)}50%{filter:drop-shadow(4px 8px 6px rgba(0,0,0,.85)) brightness(1.18) drop-shadow(0 0 10px var(--g))}}
+.rbt .cx{flex:1;min-width:0}
+.rbt .l1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.rbt .nm{font-family:Orbitron,sans-serif;font-weight:800;font-size:18px;letter-spacing:.08em}
+.rbt .hr{font-size:12px;color:#A9B8D0;margin-top:2px}
+.rbt .val{font-size:17px;margin:0}
+.rbt .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.rbt .ch{padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em;font-family:Orbitron,sans-serif}
+.tag{font-family:Orbitron,sans-serif}
+.placar{border-color:rgba(34,225,255,.35)}
+.placar:before{display:none}
+.bichos{position:absolute;right:-4px;top:-6px;display:flex;align-items:flex-end;pointer-events:none}
+.bichos img{width:44px;height:auto;filter:drop-shadow(0 6px 6px rgba(0,0,0,.8))}
+.bichos img+img{margin-left:-6px}
+.aviso b{color:#7FE9FF}
+#v_cal .voltar{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+#v_cal .voltar button{width:42px;height:42px;border-radius:12px;border:1px solid #2A3E62;background:rgba(10,18,34,.9);color:#7FE9FF;font-size:22px;cursor:pointer}
+#v_cal .voltar b{font-family:Orbitron,sans-serif;font-size:17px;letter-spacing:.08em}
+#calbox{height:calc(100vh - 170px);min-height:520px;border-radius:16px;overflow:hidden;border:1px solid var(--borda)}
+#login{padding-top:30px}
+#login .logo-it{width:min(220px,60vw);display:block;margin:0 auto 4px}
+#login .bb{width:100%;max-width:380px;display:block;margin:6px auto 4px;transform:perspective(700px) rotateX(9deg);filter:drop-shadow(0 14px 14px rgba(0,0,0,.85)) drop-shadow(0 0 16px rgba(34,225,255,.18))}
+#login input{background:#070D1A;border-color:#2A3E62;box-shadow:inset 0 4px 10px rgba(0,0,0,.7)}
+#login button{background:linear-gradient(180deg,#5FEBFF,#22B8FF 55%,#2F7BFF);color:#04070D;box-shadow:0 6px 0 #154E86,0 14px 26px rgba(34,225,255,.35),inset 0 1px 0 rgba(255,255,255,.7)}
+.toast{background:rgba(10,18,34,.95);border-color:#22E1FF}
+@media (prefers-reduced-motion:reduce){body,.logo-it,.hero:before,.rbt .ft img{animation:none}}
 </style>
 </head>
 <body>
-<canvas id="ceu" aria-hidden="true"></canvas>
 <div id="login">
-  <svg class="sol" style="width:120px;height:120px;margin:0 auto 18px;display:block" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gh2" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,150,60,.6)"/><stop offset="1" stop-color="rgba(255,110,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="26" fill="url(#gh2)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><image href="planetas/sol.png" x="36" y="36" width="28" height="28"/><g class="orb o1"><image href="planetas/mercurio.png" x="66.5" y="46.5" width="7" height="7"/></g><g class="orb o2"><image href="planetas/venus.png" x="45.5" y="16.5" width="9" height="9"/></g><g class="orb o3"><image href="planetas/terra.png" x="6" y="44" width="12" height="12"/></g><g class="orb o4"><image href="planetas/marte.png" x="45" y="92" width="10" height="10"/></g></svg>
-  <h1>ÓRBITA</h1>
+  <img class="logo-it" src="img/logo.webp" alt="Investing Terminal">
+  <img class="bb" src="img/touro_urso.webp" alt="Touro e urso">
   <p class="sub" style="font-size:14px;margin-top:10px">Digite a chave do app (só na primeira vez).</p>
-  <label for="chave" class="lbl">Chave</label>
+  <label for="chave" class="lbl">Chave de acesso</label>
   <input id="chave" type="password" autocomplete="off">
-  <button onclick="salvarChave()">Entrar</button>
-  <p class="sub" id="lerro" style="color:#fca5a5"></p>
+  <button onclick="salvarChave()">ENTRAR</button>
+  <p class="sub" id="lerro" style="color:#FF8A8A"></p>
 </div>
 <div class="toast" id="toast"></div>
 <div class="wrap" id="app">
-  <div class="top">
-    <div class="marca"><svg class="sol" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gh" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="rgba(255,150,60,.6)"/><stop offset="1" stop-color="rgba(255,110,40,0)"/></radialGradient></defs><circle cx="50" cy="50" r="26" fill="url(#gh)"/><g fill="none" stroke="rgba(150,180,255,.28)" stroke-width=".8"><circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="29"/><circle cx="50" cy="50" r="38"/><circle cx="50" cy="50" r="47"/></g><image href="planetas/sol.png" x="36" y="36" width="28" height="28"/><g class="orb o1"><image href="planetas/mercurio.png" x="66.5" y="46.5" width="7" height="7"/></g><g class="orb o2"><image href="planetas/venus.png" x="45.5" y="16.5" width="9" height="9"/></g><g class="orb o3"><image href="planetas/terra.png" x="6" y="44" width="12" height="12"/></g><g class="orb o4"><image href="planetas/marte.png" x="45" y="92" width="10" height="10"/></g></svg><div style="min-width:0"><h1>ÓRBITA</h1><div class="sub" id="conta">conta —</div></div></div>
-    <div class="direita">
-      <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
-      <button class="som" id="bsom" onclick="alternarSom()" aria-label="Ligar ou desligar o alerta sonoro"></button>
-    </div>
+  <div class="tape"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div></div></div>
+  <div class="topo-it">
+    <button class="som" id="bsom" onclick="alternarSom()" aria-label="Ligar ou desligar o alerta sonoro"></button>
+    <img class="logo-it" src="img/logo.webp" alt="Investing Terminal">
+    <div class="pill off" id="pill"><div class="dot"></div><span id="st">AGUARDANDO</span></div>
   </div>
+  <div class="conta-it" id="conta">conta —</div>
   <div class="tabsx">
     <button id="t_resumo" class="sel" onclick="aba('resumo')">RESUMO</button>
     <button id="t_placar" onclick="aba('placar')">PLACAR</button>
@@ -158,9 +227,14 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
     <div class="leg"><span><i style="background:#ffc46b"></i>Entrada</span><span><i style="background:#f87171"></i>Stop</span><span><i style="background:#4ade80"></i>Alvo</span><span><i style="background:#60a5fa"></i>Suporte / resistência</span></div>
     <div class="nota">Gráfico de 5 minutos (escolha 1 a 6 horas acima) · horários de Brasília</div>
   </div>
+  <div id="v_cal" style="display:none">
+    <div class="voltar"><button onclick="aba(ABA_ANT)" aria-label="Voltar">‹</button><div><b>CALENDÁRIO ECONÔMICO</b><div class="mini" style="margin:0">EUA · horário do seu celular (Brasília)</div></div></div>
+    <div id="calbox"></div>
+  </div>
   <div id="v_placar" style="display:none">
   <div class="card placar">
     <div class="topo">
+      <div class="bichos"><img src="img/touro.webp" alt=""><img src="img/urso.webp" alt=""></div>
       <div class="lbl">Total do mês · todos os robôs</div><div class="big neu" id="pMes">—</div>
     </div>
     <div class="linha2"><span class="chip neu" id="pMesPct">—</span><span class="mini" id="pMesD" style="margin:0"></span></div>
@@ -192,7 +266,9 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   </div>
 
 
-  <h2>RESULTADOS FECHADOS</h2>
+  <button class="btn-cal" onclick="aba('cal')"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="4" width="16" height="14" rx="3" fill="none" stroke="#22E1FF" stroke-width="1.8"/><path d="M2 8.5H18M6 2V6M14 2V6" stroke="#22E1FF" stroke-width="1.8" stroke-linecap="round"/><circle cx="7" cy="12.5" r="1.3" fill="#FF5A5A"/><circle cx="11" cy="12.5" r="1.3" fill="#22E1FF"/></svg>CALENDÁRIO ECONÔMICO</button>
+
+  <h2>OS ROBÔS · RESULTADOS FECHADOS</h2>
   <div class="tabs">
     <button id="b_hoje" class="sel" onclick="per('hoje')">HOJE</button>
     <button id="b_semana" onclick="per('semana')">SEMANA</button>
@@ -200,17 +276,17 @@ canvas.g{width:100%;height:max(420px,calc(100vh - 300px));display:block;touch-ac
   </div>
   <div class="g4" id="robos"></div>
   <h2>POSIÇÕES ABERTAS</h2>
-  <button class="zerar" id="btnZerar" onclick="zerarRobos()">⛔ ZERAR POSIÇÕES DOS ROBÔS</button>
+  <button class="zerar" id="btnZerar" onclick="zerarRobos()">ZERAR POSIÇÕES DOS ROBÔS</button>
   <div class="mini" id="zerarSt"></div>
-  <button class="deslig" id="btnDeslig" onclick="desligarAlgo()">⏸ DESLIGAR ALGOTRADING</button>
+  <button class="deslig" id="btnDeslig" onclick="desligarAlgo()">DESLIGAR ALGOTRADING</button>
   <div class="mini" id="algoSt"></div>
   <div class="card" id="abertas"><div class="vazio">—</div></div>
 
-  <h2>ÚLTIMAS OPERAÇÕES (7 DIAS)</h2>
+  <h2>ÚLTIMAS OPERAÇÕES</h2>
   <div class="card" id="ultimas"><div class="vazio">—</div></div>
 
   </div>
-  <div class="aviso"><b>SISTEMA SOLAR</b> · 9 planetas em órbita<br>Só lê a conta · comandos: ZERAR (fecha as posições dos robôs) e DESLIGAR ALGOTRADING (para os robôs; ligar de novo só no PC) · nunca abre ordem · horários de Brasília</div>
+  <div class="aviso"><b>INVESTING TERMINAL</b> · COPY · NEXUS · APEX · contando desde 24/11/2026<br>Só lê a conta · comandos: ZERAR (fecha as posições dos robôs) e DESLIGAR ALGOTRADING (para os robôs; ligar de novo só no PC) · nunca abre ordem · horários de Brasília</div>
 </div>
 <script>
 var API = 'https://script.google.com/macros/s/AKfycbxu628RRutJbE6C8JNOiCSOQirAq_oEVrbDwUNOTl2FXnauEsE6eIHjpRZtaIshk94r/exec';
@@ -259,7 +335,12 @@ function conferirAlertas(){
   }
   VISTOS = atual;
 }
-function aba(a){ ABA = a; ['resumo','placar','graf'].forEach(function(x){ document.getElementById('t_' + x).className = a === x ? 'sel' : ''; document.getElementById('v_' + x).style.display = a === x ? 'block' : 'none'; }); if (a === 'placar' && D) { placar(); contribuicao(); } desenharGraficos(); }
+var ABA_ANT = 'resumo';
+function aba(a){ if (a === 'cal' && ABA !== 'cal') ABA_ANT = ABA; ABA = a; ['resumo','placar','graf','cal'].forEach(function(x){ var t = document.getElementById('t_' + x); if (t) t.className = a === x ? 'sel' : ''; document.getElementById('v_' + x).style.display = a === x ? 'block' : 'none'; }); if (a === 'cal') calendario(); if (a === 'placar' && D) { placar(); contribuicao(); } desenharGraficos(); window.scrollTo(0, 0); }
+function widgetTV(box, arq, cfg){ var w = document.createElement('div'); w.className = 'tradingview-widget-container'; w.style.height = '100%'; var i = document.createElement('div'); i.className = 'tradingview-widget-container__widget'; i.style.height = '100%'; w.appendChild(i); var sc = document.createElement('script'); sc.src = 'https://s3.tradingview.com/external-embedding/' + arq; sc.async = true; sc.text = JSON.stringify(cfg); w.appendChild(sc); box.innerHTML = ''; box.appendChild(w); }
+var CAL_OK = false;
+function calendario(){ if (CAL_OK) return; CAL_OK = true; widgetTV(document.getElementById('calbox'), 'embed-widget-events.js', {colorTheme: 'dark', isTransparent: true, width: '100%', height: '100%', locale: 'br', importanceFilter: '0,1', countryFilter: 'us'}); }
+function fita(){ widgetTV(document.querySelector('.tape'), 'embed-widget-ticker-tape.js', {symbols: [{proName: 'CAPITALCOM:US100', title: 'NASDAQ 100'}, {proName: 'CAPITALCOM:US500', title: 'S&P 500'}, {proName: 'CAPITALCOM:US30', title: 'DOW'}, {proName: 'CAPITALCOM:VIX', title: 'VIX'}, {proName: 'CAPITALCOM:DXY', title: 'DÓLAR (DXY)'}, {proName: 'OANDA:XAUUSD', title: 'OURO'}, {proName: 'BITSTAMP:BTCUSD', title: 'BITCOIN'}], showSymbolLogo: false, colorTheme: 'dark', isTransparent: true, displayMode: 'compact', locale: 'br'}); }
 var ZOOM = 24; try { ZOOM = Number(localStorage.getItem('jlt_zoom')) || 24; } catch(e) {}
 function offPadrao(){ return -Math.max(2, Math.round(ZOOM * 0.15)); }
 function offMin(){ return -Math.round(ZOOM * 0.5); }
@@ -388,18 +469,9 @@ function regiao(x){
   return R;
 }
 var ROBOS = [
-  {k:'MERCURIO', n:'MERCÚRIO', c:'#c9c4bc', d:'Ouro'},
-  {k:'VENUS',    n:'VÊNUS',    c:'#f2b45a', d:'Nasdaq'},
-  {k:'TERRA',    n:'TERRA',    c:'#4fc3f7', d:'Nasdaq'},
-  {k:'LUA',      n:'LUA',      c:'#dfe3ea', d:'Nasdaq', oculto:true},
-  {k:'MARTE',    n:'MARTE',    c:'#e8743f', d:'GER40'},
-  {k:'JUPITER',  n:'JÚPITER',  c:'#d9a66b', d:'Nasdaq'},
-  {k:'SATURNO',  n:'SATURNO',  c:'#e6cf98', d:'Ouro'},
-  {k:'URANO',    n:'URANO',    c:'#7fe0e6', d:'Nasdaq'},
-  {k:'NETUNO',   n:'NETUNO',   c:'#5b8cff', d:'GER40'},
-  {k:'PLUTAO',   n:'PLUTÃO',   c:'#d8bc98', d:'Ouro'},
-  {k:'COMETA',   n:'COMETA',   c:'#9fd8ff', d:'GER40', oculto:true},
-  {k:'COPY',     n:'COPY',     c:'#60a5fa', d:'Copy trade', full:true}
+  {k:'COPY',  n:'COPY',  c:'#39FF78', h:'⏱ o dia todo · fonte dos sinais', img:'robo_copy'},
+  {k:'NEXUS', n:'NEXUS', c:'#FF3333', h:'⏱ 11:30 às 18:15', img:'robo_nexus'},
+  {k:'APEX',  n:'APEX',  c:'#2896FF', h:'⏱ até 11:30 e após 18:15', img:'robo_apex'}
 ];
 var FOTO = {MERCURIO:'mercurio',VENUS:'venus',TERRA:'terra',MARTE:'marte',JUPITER:'jupiter',SATURNO:'saturno',URANO:'urano',NETUNO:'netuno',PLUTAO:'plutao',LUA:'lua'};
 function planetaSVG(k){
@@ -441,21 +513,22 @@ function planetaSVG(k){
   }
   return '<svg class="pl" viewBox="'+vb+'" width="'+w+'" height="64" aria-hidden="true" style="width:'+w+'px"><defs>'+defs+sh+clip+'</defs>'+antes+'<g clip-path="url(#'+id+'c)">'+corpo+sombra+'</g>'+depois+'</svg>';
 }
-function ROB(f){ for (var i = 0; i < ROBOS.length; i++) if (ROBOS[i].k === f) return ROBOS[i]; return ROBOS[ROBOS.length - 1]; }
+function ROB(f){ for (var i = 0; i < ROBOS.length; i++) if (ROBOS[i].k === f) return ROBOS[i]; return {k: f, n: f, c: '#A9B8D0'}; }
 function NOMEF(f){ return ROB(f).n; }
 function tagHtml(f){ var r = ROB(f); return '<span class="tag" style="color:' + r.c + ';background:' + r.c + '1f">' + r.n + '</span>'; }
 function montarRobos(){
   var g = document.getElementById('robos'); g.innerHTML = '';
   ROBOS.forEach(function(r){
-    if (r.oculto) return;
-    var c = document.createElement('div'); c.className = 'card rob' + (r.full ? ' full' : ''); c.style.borderColor = r.c + '40';
-    c.innerHTML = planetaSVG(r.k) +
-      '<div class="nm" style="color:' + r.c + ';text-shadow:0 0 12px ' + r.c + '66">' + r.n + '</div><div class="ds">' + (r.d || '&nbsp;') + '</div><div class="val" id="v_' + r.k + '">—</div><div class="mini" id="d_' + r.k + '"></div>';
+    var c = document.createElement('div'); c.className = 'card rbt';
+    c.style.borderColor = r.c + '73'; c.style.background = 'linear-gradient(135deg,' + r.c + '1f,rgba(10,18,34,.95) 55%)';
+    c.innerHTML = '<div class="ft" style="background:radial-gradient(circle at 50% 35%,' + r.c + '40,rgba(4,7,13,.9) 70%);border:1px solid ' + r.c + '80"><img src="img/' + r.img + '.webp" alt="Robô ' + r.n + '" style="--g:' + r.c + 'b3"></div>' +
+      '<div class="cx"><div class="l1"><div class="nm" style="color:' + r.c + ';text-shadow:0 0 12px ' + r.c + 'cc,0 2px 0 rgba(0,0,0,.6)">' + r.n + '</div><div class="val" id="v_' + r.k + '">—</div></div>' +
+      '<div class="hr">' + r.h + '</div><div class="mini" id="d_' + r.k + '" style="margin-top:2px"></div></div>';
     g.appendChild(c);
   });
 }
 function analise(x){
-  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', ter = x.fonte === 'TERRA', ven = x.fonte === 'VENUS', ura = x.fonte === 'URANO', lua = x.fonte === 'LUA', com = x.fonte === 'COMETA', frac = null;
+  var L = [], patr = D.patrimonio || 1, copy = x.fonte === 'COPY', esp = (x.fonte === 'NEXUS' || x.fonte === 'APEX'), plu = x.fonte === 'PLUTAO', sat = x.fonte === 'SATURNO', net = x.fonte === 'NETUNO', jup = x.fonte === 'JUPITER', mar = x.fonte === 'MARTE', ter = x.fonte === 'TERRA', ven = x.fonte === 'VENUS', ura = x.fonte === 'URANO', lua = x.fonte === 'LUA', com = x.fonte === 'COMETA', frac = null;
   var sem_stop = (!copy && x.risco === null);
   if (x.favor === 1) L.push('✅ A favor da tendência (média longa do gráfico)');
   else if (x.favor === -1) L.push('⚠️ Contra a tendência (média longa do gráfico)');
@@ -470,7 +543,8 @@ function analise(x){
     if (x.prog !== null && x.prog >= 0) L.push('📈 Já fez ' + Math.min(x.prog, 100) + '% do caminho até o alvo');
     if (!sem_stop && !x.protegido && x.lucro < 0 && x.risco < 0) { frac = Math.round(100 * x.lucro / x.risco); L.push('📉 Já andou ' + frac + '% do caminho até o stop'); }
   }
-  if (lua) L.push('⏱️ Aberta há ' + x.min + ' min · LUA foi desligada (virou o TERRA 2.0) · sai no stop, no alvo ou aos 30 min');
+  if (esp) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,35%), no alvo (2x o stop), vai pro 0x0 ao andar meio stop · fecha sozinha aos 60 min (faltam ' + Math.max(0, 60 - x.min) + ')');
+  else if (lua) L.push('⏱️ Aberta há ' + x.min + ' min · LUA foi desligada (virou o TERRA 2.0) · sai no stop, no alvo ou aos 30 min');
   else if (ter) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop ou no tempo: impulso e contra 30 min (faltam ' + Math.max(0, 30 - x.min) + '), Vanna 15 min com alvo 4x o stop · zera às 17:59');
   else if (ven) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%), no alvo (2x o stop) ou aos 20 min · faltam ' + Math.max(0, 20 - x.min) + ' min');
   else if (ura) L.push('⏱️ Aberta há ' + x.min + ' min · sai no stop (0,25%) ou no alvo (3x o stop) · ao chegar em 1,5x o stop trava +1x no bolso · zera às 18:00');
@@ -482,7 +556,9 @@ function analise(x){
   else if (sat) L.push('⏱️ Aberta há ' + x.min + ' min · sai só no stop ou no alvo (não tem saída por tempo)');
   else if (!copy) L.push('⏱️ Aberta há ' + x.min + ' min · fecha sozinha aos 45 (faltam ' + Math.max(0, 45 - x.min) + ')');
   else L.push('⏱️ Aberta há ' + x.min + ' min · flutuante ' + (Math.abs(x.lucro) / patr * 100).toFixed(1).replace('.', ',') + '% da conta');
-  if (lua) L.push('📊 LUA foi desligada em 23/11 (a estratégia dela virou o TERRA 2.0)');
+  if (x.fonte === 'NEXUS') L.push('📊 NEXUS (Espelho 2.1) copia a entrada do Copy no pregão só quando GrixCore, ZeroGEX e os mercados confirmam. Teste: acerta ~9 em 10, PF 8,8 (amostra curta)');
+  else if (x.fonte === 'APEX') L.push('📊 APEX (Espelho Fora) copia o Copy fora do pregão quando o preço médio, as paredes de gama e o momento confirmam. Teste: acerta ~9 em 10, PF 12,6 (amostra bem curta)');
+  else if (lua) L.push('📊 LUA foi desligada em 23/11 (a estratégia dela virou o TERRA 2.0)');
   else if (ter) L.push('📊 TERRA 2.0 nos testes (Nasdaq, 4 meses, gama ZeroGEX + VIX): ~2 trades por dia, gain médio ~US$ 105, loss médio ~US$ 39 com lote 1,0. PF 2,71. Trades de ~15 min');
   else if (ura) L.push('📊 URANO 2.0 nos testes (Nasdaq, 4 meses, IFR Turbo só com gama negativo + placar de 5 sondas): gain médio ~US$ 129, loss médio ~US$ 47 com lote 0,80. PF 2,61. Trades de ~21 min');
   else if (ven) L.push('📊 VÊNUS 3.0 nos testes (Nasdaq, 4 meses, aceleração do gama ZeroGEX + placar de 5 sondas): acerta ~6,5 em 10, gain médio ~US$ 75, loss médio ~US$ 33 com lote 1,0. PF 4,18. Trades de até 20 min');
@@ -522,7 +598,7 @@ function placar(){
   var dias = [], mapa = {}, hoje = new Date((D.hora || '').replace(' ', 'T'));
   if (isNaN(hoje)) hoje = new Date();
   for (var i = 6; i >= 0; i--) { var x = new Date(hoje.getTime() - i * 864e5), k = ('0' + x.getDate()).slice(-2) + '/' + ('0' + (x.getMonth() + 1)).slice(-2); dias.push({k: k, v: 0, n: 0, sem: x.getDay()}); mapa[k] = dias[dias.length - 1]; }
-  (D.ultimas || []).forEach(function(u){ var k = dia(u.hora); if (mapa[k]) { mapa[k].v += u.lucro; mapa[k].n++; } });
+  (D.ultimas || []).forEach(function(u){ if (!ROBOS.some(function(r){ return r.k === u.fonte; })) return; var k = dia(u.hora); if (mapa[k]) { mapa[k].v += u.lucro; mapa[k].n++; } });
   var sv = document.getElementById('spark'), W = sv.clientWidth || 320, H = 92, mx = 1, tot = 0;
   dias.forEach(function(x){ mx = Math.max(mx, Math.abs(x.v)); tot += x.v; });
   set('sparkTot', usd(tot, true), cls(tot));
@@ -556,9 +632,9 @@ function desenhar(){
   if (!D) return;
   var idade = (Date.now() - D.recebido) / 1000;
   var pill = document.getElementById('pill');
-  if (idade < 60) { pill.className = 'pill on'; set('st', 'AO VIVO'); }
-  else { pill.className = 'pill off'; set('st', 'SEM SINAL ' + Math.round(idade / 60) + ' MIN'); }
-  set('conta', 'conta ' + D.conta + (D.desde ? ' · contando desde ' + dia(D.desde) : '') + ' · atualizado ' + D.hora.substr(11, 8));
+  if (idade < 120) { pill.className = 'pill on'; set('st', 'CONECTADO'); }
+  else { pill.className = 'pill off'; set('st', 'DESCONECTADO'); }
+  set('conta', 'conta ' + D.conta + (D.desde ? ' · desde ' + dia(D.desde) : '') + ' · atualizado ' + D.hora.substr(11, 8));
   var Z = {lucro: 0, ops: 0, ganhos: 0};
   var h = D.periodos.hoje, fl = 0, fech = 0;
   ROBOS.forEach(function(r){ fl += (D.flutuante[r.k] || 0); fech += (h[r.k] || Z).lucro; });
@@ -568,7 +644,7 @@ function desenhar(){
   set('saldo', usd(D.saldo)); set('patr', usd(D.patrimonio));
   if (ABA === 'placar') { placar(); contribuicao(); }
   var p = D.periodos[P];
-  ROBOS.forEach(function(r){ if (r.oculto) return; var q = p[r.k] || Z; set('v_' + r.k, usd(q.lucro, true), cls(q.lucro)); set('d_' + r.k, q.ops + ' ops · ' + (q.ops ? Math.round(100 * q.ganhos / q.ops) : 0) + '% ganhos'); });
+  ROBOS.forEach(function(r){ var q = p[r.k] || Z; set('v_' + r.k, usd(q.lucro, true).replace('US$ ', ''), cls(q.lucro)); set('d_' + r.k, q.ops + ' ops · ' + (q.ops ? Math.round(100 * q.ganhos / q.ops) : 0) + '% ganhos'); });
   var a = document.getElementById('abertas'); a.innerHTML = '';
   if (!D.posicoes.length) a.innerHTML = '<div class="vazio">Nenhuma posição aberta</div>';
   D.posicoes.forEach(function(x){
@@ -582,8 +658,9 @@ function desenhar(){
   });
   if (D.posicoes.length) { var nt = document.createElement('div'); nt.className = 'nota'; nt.textContent = 'Leitura da situação de cada operação (fatos), não é previsão de para onde o preço vai.'; a.appendChild(nt); }
   var u = document.getElementById('ultimas'); u.innerHTML = '';
-  if (!D.ultimas.length) u.innerHTML = '<div class="vazio">Nenhuma operação nos últimos 7 dias</div>';
-  D.ultimas.forEach(function(x){
+  var ULT = D.ultimas.filter(function(x){ return ROBOS.some(function(r){ return r.k === x.fonte; }); });
+  if (!ULT.length) u.innerHTML = '<div class="vazio">Nenhuma operação desde 24/11</div>';
+  ULT.forEach(function(x){
     var r = document.createElement('div'); r.className = 'item';
     r.innerHTML = '<div><div>' + tagHtml(x.fonte) + '<b></b></div><div class="det"></div></div><div class="val"></div>';
     r.querySelector('b').textContent = x.tipo + ' ' + x.ativo + ' ' + String(x.lote).replace('.', ',');
@@ -636,17 +713,7 @@ function buscar(){
     if (t) { try { D = JSON.parse(t); conferirAlertas(); desenhar(); desenharGraficos(); statusZerar(); statusAlgo(); } catch(e) {} }
   }).catch(function(){});
 }
-(function(){
-  var cv = document.getElementById('ceu'), g = cv.getContext('2d'), E = [], W, H, mov = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  function tam(){ var dpr = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); E = []; var n = Math.round(W * H / 2600); for (var i = 0; i < n; i++) E.push({x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.3 + .2, a: Math.random() * 6.28, v: .004 + Math.random() * .02, c: Math.random() < .12 ? '255,210,150' : (Math.random() < .2 ? '160,200,255' : '255,255,255')}); }
-  var cad = null;
-  function pinta(){ g.clearRect(0, 0, W, H); E.forEach(function(e){ e.a += e.v; var o = .35 + .55 * Math.abs(Math.sin(e.a)); g.fillStyle = 'rgba(' + e.c + ',' + o.toFixed(2) + ')'; g.beginPath(); g.arc(e.x, e.y, e.r, 0, 6.28); g.fill(); });
-    if (mov && !cad && Math.random() < .004) cad = {x: Math.random() * W, y: Math.random() * H * .4, t: 0};
-    if (cad) { cad.t += 1; var x = cad.x + cad.t * 7, y = cad.y + cad.t * 3, gr = g.createLinearGradient(x - 70, y - 30, x, y); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(255,240,210,.85)'); g.strokeStyle = gr; g.lineWidth = 1.4; g.beginPath(); g.moveTo(x - 70, y - 30); g.lineTo(x, y); g.stroke(); if (cad.t > 40) cad = null; }
-    if (mov) requestAnimationFrame(pinta); }
-  addEventListener('resize', function(){ tam(); if (!mov) pinta(); }); tam(); pinta();
-})();
-montarRobos(); botaoSom(); mostrar(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
+montarRobos(); botaoSom(); mostrar(); fita(); buscar(); setInterval(buscar, 5000); setInterval(desenhar, 1000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
